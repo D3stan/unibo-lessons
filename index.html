@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lezioni</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .lezione {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .lezione h2 {
+            margin: 0;
+            color: #3498db;
+        }
+
+        .lezione p {
+            font-size: 1rem;
+            margin: 5px 0;
+        }
+
+        .lezione .aula {
+            font-size: 1rem;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #e67e22;  /* Color for "aula" info */
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .loader {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .loader span {
+            font-size: 1.5rem;
+            color: #3498db;
+        }
+
+        .nav-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .nav-buttons button {
+            font-size: 1rem;
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .nav-buttons button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+	<div id="selected-day" style="text-align: center; margin-bottom: 20px; font-size: 2rem; font-weight: bold;"></div>
+
+    <div id="loader" class="loader">
+        <span>Caricamento...</span>
+    </div>
+    <div id="lezioni-container"></div>
+
+    <!-- Pulsanti per navigare tra i giorni -->
+    <div class="nav-buttons">
+        <button id="previous-day" onclick="changeDay(-1)">← Giorno Precedente</button>
+        <button id="next-day" onclick="changeDay(1)">Giorno Successivo →</button>
+    </div>
+</div>
+
+<script>
+    let currentDate = new Date();  // Data corrente
+    let currentStartDate = formatDate(currentDate);  // Data corrente formattata
+    let currentEndDate = formatDate(currentDate);  // Data corrente formattata
+
+	function getDayName(date) {
+    const days = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+    return days[date.getDay()];
+}
+    // Funzione per formattare la data in formato yyyy-mm-dd
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Funzione per ottenere le lezioni dal giorno specificato
+async function getLezioni(startDate, endDate) {
+    const url = `https://corsi.unibo.it/laurea/IngegneriaScienzeInformatiche/orario-lezioni/@@orario_reale_json?&start=${startDate}&end=${endDate}&anno=2`;  // Sostituisci con il tuo URL reale
+    try {
+        const response = await fetch(url);
+        const lezioni = await response.json();
+
+        // Mostra il giorno selezionato
+        const selectedDayElement = document.getElementById("selected-day");
+        const dayName = getDayName(currentDate);  // Ottieni il nome del giorno
+        selectedDayElement.textContent = `Lezioni del ${dayName}, ${startDate}`;
+
+        document.getElementById("loader").style.display = "none";
+        const lezioniContainer = document.getElementById("lezioni-container");
+
+        if (lezioni.length === 0) {
+            lezioniContainer.innerHTML = "<p class='error'>Nessuna lezione trovata per questa data.</p>";
+            return;
+        }
+
+        lezioniContainer.innerHTML = '';  // Resetta il contenitore prima di aggiungere nuovi dati
+
+        lezioni.forEach(lezione => {
+            const title = lezione.title || "Titolo non disponibile";
+            const time = lezione.time || "Orario non disponibile";
+            const aula = lezione.aule[0]?.des_edificio || "Aula non disponibile";  // Nuovo campo
+
+            const lezioneDiv = document.createElement("div");
+            lezioneDiv.classList.add("lezione");
+
+            lezioneDiv.innerHTML = `
+                <h2>${title}</h2>
+                <p><strong>Orario:</strong> ${time}</p>
+                <p class="aula"><strong>Aula:</strong> ${aula}</p>
+            `;
+
+            lezioniContainer.appendChild(lezioneDiv);
+        });
+    } catch (error) {
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("lezioni-container").innerHTML = "<p class='error'>Errore nel recupero delle lezioni. Riprova più tardi.</p>";
+    }
+}
+
+
+
+
+    // Funzione per cambiare il giorno (giorno precedente o successivo)
+    function changeDay(offset) {
+    currentDate.setDate(currentDate.getDate() + offset);  // Modifica la data
+    currentStartDate = formatDate(currentDate);
+    currentEndDate = formatDate(currentDate);
+    
+    // Ricarica le lezioni per il nuovo giorno
+    getLezioni(currentStartDate, currentEndDate);
+}
+
+    // Carica le lezioni per il giorno corrente al caricamento della pagina
+    window.onload = function() {
+        getLezioni(currentStartDate, currentEndDate);
+    };
+</script>
+
+</body>
+</html>
