@@ -11,9 +11,17 @@ body {
     width: 80%;
     margin: 50px auto;
     padding: 20px;
+    display: flex;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding-bottom: 10vh;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container button {
+    margin-bottom: 20px;
 }
 
 h1 {
@@ -63,25 +71,42 @@ h1 {
 }
 
 .nav-buttons {
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: inherit; /* Colore originale */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    z-index: 1000;
+    flex-direction: column;
+
 }
 
-.nav-buttons button {
-    font-size: 1rem;
-    padding: 10px 20px;
-    margin: 0 10px;
-    background-color: #3498db;
+
+.nav-buttons .nav-group {
+    display: flex;
+    gap: 10px; /* Distanza tra i pulsanti */
+}
+
+button {
+    background-color: #3498db; /* Colore originale */
     color: white;
     border: none;
     border-radius: 5px;
+    padding: 10px 20px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .nav-buttons button:hover {
     background-color: #2980b9;
 }
+
 
 #popup {
     display: none;

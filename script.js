@@ -28,7 +28,7 @@ window.addEventListener('load', () => {
             currentEndDate = formatDate(selectedDate);
             // Aggiorna il titolo con la nuova data
             const dayName = getDayName(selectedDate);
-            document.getElementById("selected-day").textContent = `Lezioni del ${dayName}, ${currentStartDate}`;
+            document.getElementById("selected-day").textContent = `Lezioni del ${dayName} ${currentStartDate}`;
             // Ricarica le lezioni per la nuova data
             getLezioni(currentStartDate, currentEndDate);
         }
@@ -171,7 +171,7 @@ async function getLezioni(startDate, endDate) {
         const lezioni = await response.json();
         const selectedDayElement = document.getElementById("selected-day");
         const dayName = getDayName(currentDate);
-        selectedDayElement.textContent = `Lezioni del ${dayName}, ${startDate}`;
+        selectedDayElement.textContent = `Lezioni del ${dayName} ${startDate}`;
         document.getElementById("loader").style.display = "none";
         const lezioniContainer = document.getElementById("lezioni-container");
         if (lezioni.length === 0) {

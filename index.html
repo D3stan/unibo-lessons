@@ -10,21 +10,15 @@
     <body>
         <div class="container">
             <div id="selected-day" onclick="openDatePicker()" style="cursor: pointer; text-align: center; margin-bottom: 20px; font-size: 2rem; font-weight: bold;">
-                Lezioni del Martedì, 2025-03-11
+                Orario delle Lezioni
             </div>
             <input type="date" id="date-picker" style="opacity: 0; position: absolute;" title="Select Date">
-            
+            <button onclick="openPopup()">Impostazioni</button>
             <div id="loader" class="loader" style="display: none;">
                 <span>Caricamento...</span>
             </div>
             <div id="lezioni-container"></div>
-            <div class="nav-buttons">
-                <div>
-                    <button id="previous-day" onclick="changeDay(-1)"> ← Precedente</button>
-                    <button id="next-day" onclick="changeDay(1)">Successivo → </button>
-                </div>
-                <button onclick="openPopup()" style="display: block; margin: 10px auto; text-align: center;">Impostazioni</button>
-            </div>
+            
     
             <!-- Popup per cambiare i parametri -->
             <div id="popup">
@@ -47,6 +41,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="nav-buttons">
+            <div class="nav-group">
+                <button id="previous-day" onclick="changeDay(-1)">← Precedente</button>
+                <button id="next-day" onclick="changeDay(1)">Successivo →</button>
+            </div>
+            
         </div>
     </body>
 </html>
