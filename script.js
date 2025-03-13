@@ -1,6 +1,8 @@
-let currentDate = new Date();
+const currentDate = new Date();
 let currentStartDate = formatDate(currentDate);
 let currentEndDate = formatDate(currentDate);
+
+const themeToggleButton = document.getElementById('theme-toggle');
 
 let course = null;  // Parametro corso
 let anno = 1;  // Parametro anno
@@ -204,7 +206,7 @@ window.onload = function() {
     loadCourses(); // Carica i corsi al caricamento della pagina
     getLezioni(currentStartDate, currentEndDate);
 };
-const themeToggleButton = document.getElementById('theme-toggle');
+
 // Funzione per cambiare il tema
 themeToggleButton.addEventListener('click', () => {
     // Cambia la classe del body tra dark-mode e la modalità predefinita
