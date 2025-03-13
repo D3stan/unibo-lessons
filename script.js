@@ -233,9 +233,6 @@ function clearLocalStorage() {
     localStorage.removeItem('selectedCourse');
     localStorage.removeItem('selectedAnno');
     localStorage.removeItem('selectedCurriculum');
-    let course = null;  // Parametro corso
-    let anno = 1;  // Parametro anno
-    let curriculum = null
     // Ricarica la pagina per riflettere i cambiamenti
     location.reload();
 }
