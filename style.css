@@ -75,7 +75,8 @@ h1 {
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: inherit; /* Colore originale */
+    will-change: background-color;
+    background-color: inherit !important; /* Colore originale */
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: space-between;
