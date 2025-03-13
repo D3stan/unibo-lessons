@@ -11,12 +11,34 @@ let curriculum = null
 window.addEventListener('load', () => {
     const themeToggleButton = document.getElementById('theme-toggle');
     const savedTheme = localStorage.getItem('theme');
+
+    console.log(savedTheme)
+
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
         themeToggleButton.textContent = 'Tema chiaro';  // Imposta il testo del pulsante su "Tema chiaro" quando il tema è scuro
     } else {
+        document.body.classList.remove('dark-mode');
         themeToggleButton.textContent = 'Tema scuro';  // Imposta il testo del pulsante su "Tema scuro" quando il tema è chiaro
     }
+    const savedCourse = localStorage.getItem('selectedCourse');
+    const savedAnno = localStorage.getItem('selectedAnno');
+    const savedCurriculum = localStorage.getItem('selectedCurriculum')!="null" ? localStorage.getItem('selectedCurriculum') : null;
+    // Se ci sono parametri salvati, applicali
+    if (savedCourse) {
+        course = savedCourse;
+        document.getElementById("course").value = savedCourse;
+    }
+    if (savedAnno) {
+        anno = parseInt(savedAnno);
+        document.getElementById("anno").value = savedAnno;
+    }
+    if (savedCurriculum) {
+        curriculum = savedCurriculum;
+    }
+    loadCourses(); // Carica i corsi al caricamento della pagina
+    getLezioni(currentStartDate, currentEndDate);
+
 
     datePicker = document.getElementById("date-picker");
     // Quando l'utente seleziona una data
@@ -211,40 +233,12 @@ function openPopup() {
 function closePopup() {
     document.getElementById("popup").style.display = "none";
 }
-window.onload = function() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark-theme');
-    } else {
-        document.body.classList.remove('dark-theme');
-    }
-    const savedCourse = localStorage.getItem('selectedCourse');
-    const savedAnno = localStorage.getItem('selectedAnno');
-    const savedCurriculum = localStorage.getItem('selectedCurriculum')!="null" ? localStorage.getItem('selectedCurriculum') : null;
-    // Se ci sono parametri salvati, applicali
-    if (savedCourse) {
-        course = savedCourse;
-        document.getElementById("course").value = savedCourse;
-    }
-    if (savedAnno) {
-        anno = parseInt(savedAnno);
-        document.getElementById("anno").value = savedAnno;
-    }
-    if (savedCurriculum) {
-        curriculum = savedCurriculum;
-    }
-    loadCourses(); // Carica i corsi al caricamento della pagina
-    getLezioni(currentStartDate, currentEndDate);
-};
 
 
 function clearLocalStorage() {
     localStorage.removeItem('selectedCourse');
     localStorage.removeItem('selectedAnno');
     localStorage.removeItem('selectedCurriculum');
-    let course = null;  // Parametro corso
-    let anno = 1;  // Parametro anno
-    let curriculum = null
     // Ricarica la pagina per riflettere i cambiamenti
     location.reload();
 }

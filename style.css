@@ -75,8 +75,7 @@ h1 {
     bottom: 0;
     left: 0;
     width: 100%;
-    will-change: background-color;
-    background-color: inherit !important; /* Colore originale */
+    background-color: #f4f4f9; /* Colore originale */
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: space-between;
@@ -220,6 +219,11 @@ body.dark-mode {
 body.dark-mode .container {
     background-color: #34495e;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .nav-buttons {
+    background-color: #34495e; /* Colore originale */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
 }
 
 body.dark-mode h1 {
