@@ -1,31 +1,61 @@
-const currentDate = new Date();
+let currentDate = new Date();
 let currentStartDate = formatDate(currentDate);
 let currentEndDate = formatDate(currentDate);
 
-const themeToggleButton = document.getElementById('theme-toggle');
+let datePicker
 
 let course = null;  // Parametro corso
 let anno = 1;  // Parametro anno
 let curriculum = null
+
+window.addEventListener('load', () => {
+    const themeToggleButton = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeToggleButton.textContent = 'Tema chiaro';  // Imposta il testo del pulsante su "Tema chiaro" quando il tema è scuro
+    } else {
+        themeToggleButton.textContent = 'Tema scuro';  // Imposta il testo del pulsante su "Tema scuro" quando il tema è chiaro
+    }
+
+    datePicker = document.getElementById("date-picker");
+    // Quando l'utente seleziona una data
+    datePicker.addEventListener("change", function () {
+        const selectedDate = new Date(this.value);
+        if (!isNaN(selectedDate.getTime())) {  // Verifica che la data sia valida
+            currentDate = selectedDate;
+            currentStartDate = formatDate(selectedDate);
+            currentEndDate = formatDate(selectedDate);
+            // Aggiorna il titolo con la nuova data
+            const dayName = getDayName(selectedDate);
+            document.getElementById("selected-day").textContent = `Lezioni del ${dayName}, ${currentStartDate}`;
+            // Ricarica le lezioni per la nuova data
+            getLezioni(currentStartDate, currentEndDate);
+        }
+    });
+
+    
+    // Funzione per cambiare il tema
+    themeToggleButton.addEventListener('click', () => {
+        // Cambia la classe del body tra dark-mode e la modalità predefinita
+        document.body.classList.toggle('dark-mode');
+
+        // Cambia il testo del pulsante
+        if (document.body.classList.contains('dark-mode')) {
+            themeToggleButton.textContent = 'Tema chiaro';  // Quando il tema è scuro, cambia il testo a "Tema chiaro"
+            localStorage.setItem('theme', 'dark');
+        } else {
+            themeToggleButton.textContent = 'Tema scuro';  // Quando il tema è chiaro, cambia il testo a "Tema scuro"
+            localStorage.setItem('theme', 'light');
+        }
+    });
+});
+
 function openDatePicker() {
-    const datePicker = document.getElementById("date-picker");
     datePicker.style.display = "block";  // Mostra il calendario
     datePicker.showPicker();  // Apre direttamente il selettore di data
 }
-// Quando l'utente seleziona una data
-document.getElementById("date-picker").addEventListener("change", function () {
-    const selectedDate = new Date(this.value);
-    if (!isNaN(selectedDate.getTime())) {  // Verifica che la data sia valida
-        currentDate = selectedDate;
-        currentStartDate = formatDate(selectedDate);
-        currentEndDate = formatDate(selectedDate);
-        // Aggiorna il titolo con la nuova data
-        const dayName = getDayName(selectedDate);
-        document.getElementById("selected-day").textContent = `Lezioni del ${dayName}, ${currentStartDate}`;
-        // Ricarica le lezioni per la nuova data
-        getLezioni(currentStartDate, currentEndDate);
-    }
-});
+
 function getDayName(date) {
     const days = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
     return days[date.getDay()];
@@ -207,34 +237,14 @@ window.onload = function() {
     getLezioni(currentStartDate, currentEndDate);
 };
 
-// Funzione per cambiare il tema
-themeToggleButton.addEventListener('click', () => {
-    // Cambia la classe del body tra dark-mode e la modalità predefinita
-    document.body.classList.toggle('dark-mode');
 
-    // Cambia il testo del pulsante
-    if (document.body.classList.contains('dark-mode')) {
-        themeToggleButton.textContent = 'Tema chiaro';  // Quando il tema è scuro, cambia il testo a "Tema chiaro"
-        localStorage.setItem('theme', 'dark');
-    } else {
-        themeToggleButton.textContent = 'Tema scuro';  // Quando il tema è chiaro, cambia il testo a "Tema scuro"
-        localStorage.setItem('theme', 'light');
-    }
-});
-// Carica la preferenza del tema dall'archiviazione locale all'avvio della pagina
-window.addEventListener('load', () => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-        themeToggleButton.textContent = 'Tema chiaro';  // Imposta il testo del pulsante su "Tema chiaro" quando il tema è scuro
-    } else {
-        themeToggleButton.textContent = 'Tema scuro';  // Imposta il testo del pulsante su "Tema scuro" quando il tema è chiaro
-    }
-});
 function clearLocalStorage() {
     localStorage.removeItem('selectedCourse');
     localStorage.removeItem('selectedAnno');
     localStorage.removeItem('selectedCurriculum');
+    let course = null;  // Parametro corso
+    let anno = 1;  // Parametro anno
+    let curriculum = null
     // Ricarica la pagina per riflettere i cambiamenti
     location.reload();
 }
