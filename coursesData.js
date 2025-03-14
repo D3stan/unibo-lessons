@@ -1,4 +1,7 @@
 const coursesData = {
+    "ECONOMIA": { 
+        "department": "- ECONOMIA E MANAGEMENT -", 
+    },
     "CLaBE": {
         "course_name": "Business and economics",
         "type": "1cycle"
@@ -39,6 +42,9 @@ const coursesData = {
         "course_name": "Management e marketing",
         "type": "laurea"
     },
+    "BIOTECH": { 
+        "department": "- FARMACIA E BIOTECNOLOGIE -", 
+    },
     "Biotecnologie": {
         "course_name": "Biotecnologie",
         "type": "laurea"
@@ -63,6 +69,9 @@ const coursesData = {
         "course_name": "Scienze farmaceutiche applicate",
         "type": "laurea"
     },
+    "GIURISPRUDENZA": { 
+        "department": "- GIURISPRUDENZA -", 
+    },
     "ConsulenteLavoroRelazioniAziendali": {
         "course_name": "Consulente del lavoro e delle relazioni aziendali",
         "type": "laurea"
@@ -79,6 +88,9 @@ const coursesData = {
         "course_name": "Giurista per le imprese e per la pubblica amministrazione",
         "type": "laurea"
     },
+    "ARCHITETTURA": { 
+        "department": "- ARCHITETTURA -", 
+    },
     "architettura": {
         "course_name": "Architettura",
         "type": "magistralecu"
@@ -90,6 +102,9 @@ const coursesData = {
     "Building": {
         "course_name": "Building construction engineering",
         "type": "1cycle"
+    },
+    "INGEGNERIA": { 
+        "department": "- INGENGERIA -", 
     },
     "MaterialiCompositiPolimerici": {
         "course_name": "Compositi polimerici",
@@ -171,6 +186,9 @@ const coursesData = {
         "course_name": "Tecnologie dei sistemi informatici",
         "type": "laurea"
     },
+    "LINGUE E TRADUZIONE": { 
+        "department": "- LINGUE E LETTERATURE, TRADUZIONE E INTERPRETAZIONE -", 
+    },
     "LingueLetteratureStraniere": {
         "course_name": "Lingue e letterature straniere",
         "type": "laurea"
@@ -182,6 +200,9 @@ const coursesData = {
     "LingueMercatiCultureAsia": {
         "course_name": "Lingue, mercati e culture dell'asia e dell'africa mediterranea",
         "type": "laurea"
+    },
+    "MEDICINA": { 
+        "department": "- MEDICINA E CHIRURGIA -", 
     },
     "Dietistica": {
         "course_name": "Dietistica (abilitante alla professione sanitaria di dietista)",
@@ -263,6 +284,9 @@ const coursesData = {
         "course_name": "Tecniche ortopediche (abilitante alla professione sanitaria di tecnico ortopedico)",
         "type": "laurea"
     },
+    "VETERINARIA": { 
+        "department": "- MEDICINA VETERINARIA -", 
+    },
     "acquacoltura": {
         "course_name": "Acquacoltura e igiene delle produzioni ittiche",
         "type": "laurea"
@@ -275,9 +299,15 @@ const coursesData = {
         "course_name": "Veterinary medicine",
         "type": "singlecycle"
     },
+    "PSICOLOGIA": { 
+        "department": "- PSICOLOGIA -", 
+    },
     "ScienzeTecnichePsicologiche": {
         "course_name": "Scienze e tecniche psicologiche",
         "type": "laurea"
+    },
+    "SCIENZE": { 
+        "department": "- SCIENZE -", 
     },
     "Astronomia": {
         "course_name": "Astronomia",
@@ -343,9 +373,8 @@ const coursesData = {
         "course_name": "Scienze naturali",
         "type": "laurea"
     },
-    "ScienzeStatistiche": {
-        "course_name": "Scienze statistiche",
-        "type": "laurea"
+    "AGROALIMENTARI": { 
+        "department": "- SCIENZE AGRO-ALIMENTARI -", 
     },
     "EconomiaMarketingAgroIndustriale": {
         "course_name": "Economia e mercati agro-alimentari",
@@ -379,6 +408,9 @@ const coursesData = {
         "course_name": "Viticoltura ed enologia",
         "type": "laurea"
     },
+    "EDUCAZIONE": { 
+        "department": "- SCIENZE DELL'EDUCAZIONE E DELLA FORMAZIONE -", 
+    },
     "EducatoreServiziInfanzia": {
         "course_name": "Educatore nei servizi per l'infanzia",
         "type": "laurea"
@@ -395,6 +427,9 @@ const coursesData = {
         "course_name": "Scienze della formazione primaria",
         "type": "laurea"
     },
+    "SCIENZE MOTORIE": { 
+        "department": "- SCIENZE MOTORIE -", 
+    },
     "ScienzeMotorieSportive": {
         "course_name": "Scienze delle attività motorie e sportive (Campus Bologna)",
         "type": "laurea"
@@ -402,6 +437,9 @@ const coursesData = {
     "ScienzeMotorieSportive-Rimini": {
         "course_name": "Scienze delle attività motorie e sportive (Campus Rimini)",
         "type": "laurea"
+    },
+    "SCIENZE POLITICHE": { 
+        "department": "- SCIENZE POLITICHE -", 
     },
     "EuropeanStudies": {
         "course_name": "European studies",
@@ -423,9 +461,19 @@ const coursesData = {
         "course_name": "Sviluppo e cooperazione internazionale",
         "type": "laurea"
     },
+    "SCIENZE STATISTICHE": { 
+        "department": "- SCIENZE STATISTICHE -", 
+    },
+    "ScienzeStatistiche": {
+        "course_name": "Scienze statistiche",
+        "type": "laurea"
+    },
     "StatisticaFinanzaAssicurazioni": {
         "course_name": "Statistica, finanza e assicurazioni",
         "type": "laurea"
+    },
+    "SOCIOLOGIA": { 
+        "department": "- SOCIOLOGIA -", 
     },
     "ServizioSociale": {
         "course_name": "Servizio sociale",
@@ -434,6 +482,9 @@ const coursesData = {
     "SociologiaForli": {
         "course_name": "Sociologia",
         "type": "laurea"
+    },
+    "STUDI UMANISTICI": { 
+        "department": "- STUDI UMANISTICI -", 
     },
     "ScienzeAntropologiche": {
         "course_name": "Antropologia, religioni, civiltà orientali",

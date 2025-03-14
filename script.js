@@ -101,6 +101,14 @@ function loadCourses() {
 
     // Popola il menu con i corsi
     for (const [value, data] of Object.entries(coursesData)) {
+        if (data.department) {
+            const departmentOption = document.createElement("option");
+            departmentOption.value = "";  // Il valore può essere vuoto, poiché è solo un'etichetta
+            departmentOption.disabled = true;  // Disabilita la voce per renderla non cliccabile
+            departmentOption.textContent = data.department;  // Imposta il testo della voce al nome del dipartimento
+            courseSelect.appendChild(departmentOption);
+            continue; // Salta la parte successiva che crea un'altra opzione vuota
+        }
         const option = document.createElement("option");
         option.value = value;
         option.textContent = data.course_name; // Accede al nome del corso
@@ -217,7 +225,6 @@ function updateAnnoSelect() {
 
     // Controlla il tipo di corso
     const isSingleCycle = type.trim().toLowerCase() === "singlecycle" || type.trim().toLowerCase() === "magistralecu";
-    console.log(isSingleCycle)
     // Aggiungi le opzioni degli anni in base al tipo di corso
     const maxYear = isSingleCycle ? 5 : 3;
     for (let i = 1; i <= maxYear; i++) {
@@ -387,7 +394,6 @@ function openHelp() {
 function closeHelp() {
     document.getElementById("popup-help").style.display = "none";
 }
-
 
 function clearLocalStorage() {
     localStorage.removeItem('selectedCourse');
