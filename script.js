@@ -304,7 +304,7 @@ async function getLezioni(startDate, endDate) {
     const lezioniContainer = document.getElementById("lezioni-container");
 
     if (lezioni.length === 0) {
-        lezioniContainer.innerHTML = "<p class='error'>Nessuna lezione trovata per questa data.</p>";
+        lezioniContainer.innerHTML = "<p class='warn'>Nessuna lezione disponibile</p>";
         return;
     }
 
