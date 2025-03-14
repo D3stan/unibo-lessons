@@ -4,6 +4,7 @@ let currentEndDate = formatDate(currentDate);
 
 let datePicker
 
+let type = null;
 let course = null;  // Parametro corso
 let anno = 1;  // Parametro anno
 let curriculum = null
@@ -11,8 +12,6 @@ let curriculum = null
 window.addEventListener('load', () => {
     const themeToggleButton = document.getElementById('theme-toggle');
     const savedTheme = localStorage.getItem('theme');
-
-    console.log(savedTheme)
 
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
@@ -91,62 +90,141 @@ function formatDate(date) {
 // Popola il menu a tendina dei corsi
 function loadCourses() {
     const courseSelect = document.getElementById("course");
+
     // Aggiungi un'opzione vuota di default
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
-    defaultOption.disabled = true;  // Impedisce la selezione
-    defaultOption.selected = true;  // Imposta questa opzione come predefinita
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
     defaultOption.textContent = "Seleziona un corso";
     courseSelect.appendChild(defaultOption);
+
     // Popola il menu con i corsi
-    for (const [value, label] of Object.entries(coursesData)) {
+    for (const [value, data] of Object.entries(coursesData)) {
         const option = document.createElement("option");
         option.value = value;
-        option.textContent = label;
+        option.textContent = data.course_name; // Accede al nome del corso
         courseSelect.appendChild(option);
     }
+
     // Se c'è un corso salvato, selezionalo
     const savedCourse = localStorage.getItem('selectedCourse');
-    if (savedCourse) {
+    if (savedCourse && coursesData[savedCourse]) {
         courseSelect.value = savedCourse;
+        type = coursesData[savedCourse].type; // Memorizza il tipo
     }
+
+    // Aggiungi un listener per salvare il corso selezionato e il suo tipo
+    courseSelect.addEventListener("change", function () {
+        const selectedValue = courseSelect.value;
+        if (coursesData[selectedValue]) {
+            type = coursesData[selectedValue].type;
+            localStorage.setItem('selectedCourse', selectedValue);
+            localStorage.setItem('type', type);
+        }
+    });
 }
+function handleCourseChange() {
+    // Ottieni il corso selezionato
+    const courseSelect = document.getElementById("course");
+    const selectedCourse = courseSelect.value;
+
+    // Verifica se è stato selezionato un corso valido
+    if (selectedCourse && coursesData[selectedCourse]) {
+        // Recupera il tipo di corso
+        type = coursesData[selectedCourse].type;
+        // Aggiorna la selezione degli anni
+        updateAnnoSelect();
+
+        // Memorizza il corso e il tipo nel localStorage
+        localStorage.setItem('selectedCourse', selectedCourse);
+        localStorage.setItem('selectedCourseType', type);
+    }
+    fetchCurricula()
+}
+
 // Funzione che viene chiamata quando un corso viene selezionato
 async function fetchCurricula() {
     const courseValue = document.getElementById("course").value;
     const curriculumContainer = document.getElementById("curriculum-container");
+    
     // Se non è selezionato nessun corso, esci dalla funzione
-    curriculum = null;
     if (!courseValue) return;
+
     // Pulisce il contenitore del curriculum (rimuove la select esistente)
     curriculumContainer.innerHTML = '';
-    const url = `https://corsi.unibo.it/laurea/${courseValue}/orario-lezioni/@@available_curricula`;
-    try {
-        const response = await fetch(url);
-        const curricula = await response.json();
-        // Se ci sono più di un curriculum, crea un nuovo menu a tendina
-        if (curricula.length > 1) {
-            const curriculumSelect = document.createElement("select");
-            curriculumSelect.id = "curriculum";
-            curricula.forEach(curriculum => {
-                const option = document.createElement("option");
-                option.value = curriculum.value;
-                // Modifica il label per avere la prima lettera maiuscola e il resto minuscolo
-                const formattedLabel = curriculum.label.charAt(0).toUpperCase() + curriculum.label.slice(1).toLowerCase();
-                option.textContent = formattedLabel;
-                curriculumSelect.appendChild(option);
-            });
-            curriculumContainer.appendChild(curriculumSelect);
-            curriculumContainer.style.display = "block"; // Rendi visibile il contenitore
-        } else if (curricula.length === 1) {
-            // Se c'è solo un curriculum, lo nascondiamo
-            curriculumContainer.style.display = "none"; // Nascondiamo la select
-        } else {
-            // Se non ci sono curricula, non mostrare la select
-            curriculumContainer.style.display = "none"; // Nascondiamo il contenitore
-        }
-    } catch (error) {
-        console.error("Errore nel caricamento dei curricula:", error);
+    
+    // Definiamo gli URL da tentare
+    const urls = [
+        `https://corsi.unibo.it/${type}/${courseValue}/orario-lezioni/@@available_curricula`,
+        `https://corsi.unibo.it/${type}/${courseValue}/timetable/@@available_curricula`
+    ];
+
+    let curricula = null;
+
+    // Proviamo entrambi gli URL, partendo dal primo
+    for (let url of urls) {
+        try {
+            const response = await fetch(url);
+            if (response.ok) {
+                curricula = await response.json();
+                break; // Se la risposta è ok, esci dal ciclo
+            }
+        } catch (error) {}
+    }
+    // Se curricula è ancora null, significa che entrambi gli URL hanno fallito
+    if (curricula === null) {
+        console.error("Errore nel caricamento dei curricula da entrambi gli URL.");
+        return;
+    }
+
+    // Se ci sono più di un curriculum, crea un nuovo menu a tendina
+    if (curricula.length > 1) {
+        const curriculumSelect = document.createElement("select");
+        curriculumSelect.id = "curriculum";
+        curricula.forEach(curriculum => {
+            const option = document.createElement("option");
+            option.value = curriculum.value;
+            // Modifica il label per avere la prima lettera maiuscola e il resto minuscolo
+            const formattedLabel = curriculum.label.charAt(0).toUpperCase() + curriculum.label.slice(1).toLowerCase();
+            option.textContent = formattedLabel;
+            curriculumSelect.appendChild(option);
+        });
+        curriculumContainer.appendChild(curriculumSelect);
+        curriculumContainer.style.display = "block"; // Rendi visibile il contenitore
+    } else if (curricula.length === 1) {
+        // Se c'è solo un curriculum, lo nascondiamo
+        curriculumContainer.style.display = "none"; // Nascondiamo la select
+    } else {
+        // Se non ci sono curricula, non mostrare la select
+        curriculumContainer.style.display = "none"; // Nascondiamo il contenitore
+    }
+}
+
+function updateAnnoSelect() {
+    const annoSelect = document.getElementById("anno");
+
+    // Rimuove tutte le opzioni attuali (tranne la prima)
+    annoSelect.innerHTML = '';
+    
+    // Aggiungi l'opzione di default
+    const defaultOption = document.createElement("option");
+    defaultOption.value = 0;
+    defaultOption.selected = true;
+    defaultOption.disabled = true;
+    defaultOption.textContent = "Seleziona un anno";
+    annoSelect.appendChild(defaultOption);
+
+    // Controlla il tipo di corso
+    const isSingleCycle = type.trim().toLowerCase() === "singlecycle" || type.trim().toLowerCase() === "magistralecu";
+    console.log(isSingleCycle)
+    // Aggiungi le opzioni degli anni in base al tipo di corso
+    const maxYear = isSingleCycle ? 5 : 3;
+    for (let i = 1; i <= maxYear; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = `Anno ${i}`;
+        annoSelect.appendChild(option);
     }
 }
 // Funzione per aggiornare i parametri e ricaricare le lezioni
@@ -160,7 +238,6 @@ function updateParams() {
         // Se è selezionato un curriculum, puoi usarlo per aggiornare la URL o altri parametri
         if (curriculumValue) {
             curriculum=curriculumValue  
-            console.log("Curriculum selezionato correttamente");
         }
         // Salvataggio dei parametri nel localStorage
         localStorage.setItem('selectedCourse', course);
@@ -175,50 +252,109 @@ async function getLezioni(startDate, endDate) {
     if(!course){
         document.getElementById("loader").style.display = "none";
         document.getElementById("lezioni-container").innerHTML = "<p class='error'>Configura il tuo corso dalle impostazioni</p>";
-        return
+        return;
     }
-    // Costruzione dell'URL
-    let url = `https://corsi.unibo.it/laurea/${course}/orario-lezioni/@@orario_reale_json?start=${startDate}&end=${endDate}&anno=${anno}`;
-    // Se c'è un curriculum selezionato, aggiungilo all'URL
-    try{
-        if (curriculum) {
-            url += `&curricula=${curriculum}`;
-        }
-    } catch (error) {
-        console.log(error)
-    }
-    console.log(url)
+
+    // Costruzione degli URL
+    let urls = [
+        `https://corsi.unibo.it/${type}/${course}/orario-lezioni/@@orario_reale_json?start=${startDate}&end=${endDate}&anno=${anno}`,
+        `https://corsi.unibo.it/${type}/${course}/timetable/@@orario_reale_json?start=${startDate}&end=${endDate}&anno=${anno}`
+    ];
+
+    // Aggiungi il curriculum se è presente
     try {
-        const response = await fetch(url);
-        const lezioni = await response.json();
-        const selectedDayElement = document.getElementById("selected-day");
-        const dayName = getDayName(currentDate);
-        selectedDayElement.textContent = `Lezioni del ${dayName} ${startDate}`;
-        document.getElementById("loader").style.display = "none";
-        const lezioniContainer = document.getElementById("lezioni-container");
-        if (lezioni.length === 0) {
-            lezioniContainer.innerHTML = "<p class='error'>Nessuna lezione trovata per questa data.</p>";
-            return;
+        if (curriculum) {
+            urls = urls.map(url => url + `&curricula=${curriculum}`);
         }
-        lezioniContainer.innerHTML = '';
-        lezioni.forEach(lezione => {
-            const title = lezione.title || "Titolo non disponibile";
-            const time = lezione.time || "Orario non disponibile";
-            const aula = lezione.aule[0]?.des_edificio || "Aula non disponibile";
-            const lezioneDiv = document.createElement("div");
-            lezioneDiv.classList.add("lezione");
-            lezioneDiv.innerHTML = `
-                <h2>${title}</h2>
-                <p><strong>Orario:</strong> ${time}</p>
-                <p class="aula"><strong>Aula:</strong> ${aula}</p>
-            `;
-            lezioniContainer.appendChild(lezioneDiv);
-        });
     } catch (error) {
+        console.log(error);
+    }
+
+    let lezioni = null;
+
+    // Proviamo entrambi gli URL
+    for (let url of urls) {
+        try {
+            const response = await fetch(url);
+            if (response.ok) {
+                lezioni = await response.json();
+                break; // Se la risposta è ok, esci dal ciclo
+            }
+        } catch (error) {}
+    }
+
+    // Se lezioni è ancora null, significa che entrambi gli URL hanno fallito
+    if (lezioni === null) {
         document.getElementById("loader").style.display = "none";
         document.getElementById("lezioni-container").innerHTML = "<p class='error'>Errore nel recupero delle lezioni. Riprova più tardi.</p>";
+        return;
     }
+
+    const selectedDayElement = document.getElementById("selected-day");
+    const dayName = getDayName(currentDate);
+    selectedDayElement.textContent = `Lezioni del ${dayName} ${startDate}`;
+    document.getElementById("loader").style.display = "none";
+    const lezioniContainer = document.getElementById("lezioni-container");
+
+    if (lezioni.length === 0) {
+        lezioniContainer.innerHTML = "<p class='error'>Nessuna lezione trovata per questa data.</p>";
+        return;
+    }
+
+    lezioniContainer.innerHTML = '';
+    lezioni.forEach(lezione => {
+        const title = lezione.title || "Titolo non disponibile";
+        const time = lezione.time || "Orario non disponibile";
+        const teacher = lezione.docente || "Docente non disponibile";
+        const aula = lezione.aule[0]?.des_edificio || "Aula non disponibile";
+        const teachingCode = lezione.cod_modulo;
+        const lezioneDiv = document.createElement("div");
+
+        // Crea il div della lezione senza il link subito
+        lezioneDiv.classList.add("lezione");
+        lezioneDiv.innerHTML = `
+            <h2>${title}</h2>
+            <p><strong>Orario:</strong> ${time}</p>
+            <p id="docente"><strong>Docente: </strong>${teacher}</p>
+            <p class="aula"><strong>Aula:</strong> ${aula}</p>
+        `;
+
+        // Aggiungi l'evento click sul titolo per ottenere il link
+        lezioneDiv.querySelector("h2").addEventListener("click", function() {
+            trovaInsegnamento(teachingCode.split('_')[0], teacher)
+                .then(link => {
+                    console.log("Link trovato:", link);
+
+                    // Redireziona l'utente al link trovato
+                    window.location.href = link;
+                })
+                .catch(error => {
+                    console.log(error.message);
+                    // Eventuale gestione dell'errore se non trovato
+                    alert("Insegnamento non trovato.");
+                });
+        });
+
+        lezioneDiv.querySelector("p#docente").addEventListener("click", function() {
+            cercaDocente(teacher)
+                .then(link => {
+                    console.log("Link trovato:", link);
+
+                    // Redireziona l'utente al link trovato
+                    window.location.href = link;
+                })
+                .catch(error => {
+                    console.log(error.message);
+                    // Eventuale gestione dell'errore se non trovato
+                    alert("Docente non trovato.");
+                });
+        });
+
+        // Aggiungi il div della lezione nel container
+        lezioniContainer.appendChild(lezioneDiv);
+    });
 }
+
 // Funzione per cambiare il giorno
 function changeDay(offset) {
     currentDate.setDate(currentDate.getDate() + offset);
@@ -243,100 +379,112 @@ function clearLocalStorage() {
     location.reload();
 }
 
-const coursesData = {
-    "EconomiaAziendale": "Economia aziendale",
-    "clei": "Economia dell'impresa",
-    "EconomiaCommercio": "Economia e commercio",
-    "EconomiaMercatiIstituzioni": "Economia, mercati e istituzioni",
-    "clet": "Economics of tourism and cities",
-    "ManagementMarketing": "Management e marketing",
-    "Biotecnologie": "Biotecnologie",
-    "ScienzeFarmaceutiche": "Scienze farmaceutiche applicate",
-    "ConsulenteLavoroRelazioniAziendali": "Consulente del lavoro e delle relazioni aziendali",
-    "GiuristaImpresa": "Giurista per le imprese e per la pubblica amministrazione",
-    "ArchitetturaIngegneria": "Architettura-ingegneria",
-    "MaterialiCompositiPolimerici": "Compositi polimerici",
-    "DesignProdottoIndustriale": "Design del prodotto industriale",
-    "IngegneriaAerospaziale": "Ingegneria aerospaziale",
-    "IngegneriaBiomedica": "Ingegneria biomedica",
-    "IngegneriaChimicaBiochimica": "Ingegneria chimica e biochimica",
-    "IngegneriaCivile": "Ingegneria civile",
-    "IngegneriaAutomazione": "Ingegneria dell'automazione",
-    "elettrica": "Ingegneria dell'energia elettrica",
-    "IngegneriaScienzeInformatiche": "Ingegneria e scienze informatiche",
-    "IngegneriaElettronicaEnergiaInformazione": "Ingegneria elettronica",
-    "ElettronicaTelecomunicazioni": "Ingegneria elettronica e telecomunicazioni",
-    "IngegneriaEnergetica": "Ingegneria energetica",
-    "IngegneriaGestionale": "Ingegneria gestionale",
-    "IngegneriaInformatica": "Ingegneria informatica",
-    "IngegneriaMeccanicaForli": "Ingegneria meccanica (Forli)",
-    "IngegneriaMeccanica-Bologna": "Ingegneria meccanica (Bologna)",
-    "IngegneriAmbienTerritorio": "Ingegneria per l'ambiente e il territorio",
-    "meccatronica": "Meccatronica",
-    "TecnicheEdiliziaTerritorio": "Tecniche per l'edilizia e il territorio",
-    "TecnologieSistemiInformatici": "Tecnologie dei sistemi informatici",
-    "LingueLetteratureStraniere": "Lingue e letterature straniere",
-    "LingueTecnologieComunicazioneInterculturale": "Lingue e tecnologie per la comunicazione interculturale",
-    "LingueMercatiCultureAsia": "Lingue, mercati e culture dell'asia e dell'africa mediterranea",
-    "Dietistica": "Dietistica (abilitante alla professione sanitaria di dietista)",
-    "EducazioneProfessionale": "Educazione professionale (abilitante alla professione sanitaria di educatore professionale)",
-    "fisioterapia": "Fisioterapia (abilitante alla professione sanitaria di fisioterapista)",
-    "IgieneDentale": "Igiene dentale (abilitante alla professione sanitaria di igienista dentale)",
-    "Infermieristica": "Infermieristica (Bologna)",
-    "Infermieristica-Ravenna": "Infermieristica (Ravenna)",
-    "Infermieristica-Rimini": "Infermieristica (Rimini)",
-    "Logopedia": "Logopedia (abilitante alla professione sanitaria di logopedista)",
-    "ostetricia": "Ostetricia (abilitante alla professione sanitaria di ostetrica/o)",
-    "Podologia": "Podologia (abilitante alla professione sanitaria di podologo)",
-    "PrevenzioneAmbienteLavoro": "Tecniche della prevenzione nell'ambiente e nei luoghi di lavoro (abilitante alla professione sanitaria di tecnico della prevenzione nell'ambiente e nei luoghi di lavoro)",
-    "tlb-bologna": "Tecniche di laboratorio biomedico (abilitante alla professione sanitaria di tecnico di laboratorio biomedico)",
-    "Neurofisiopatologia": "Tecniche di neurofisiopatologia (abilitante alla professione sanitaria di tecnico di neurofisiopatologia)",
-    "TecnicheRadiologiaMedica": "Tecniche di radiologia medica, per immagini e radioterapia (abilitante alla professione sanitaria di tecnico di radiologia medica)",
-    "TecnicheOrtopediche": "Tecniche ortopediche (abilitante alla professione sanitaria di tecnico ortopedico)",
-    "acquacoltura": "Acquacoltura e igiene delle produzioni ittiche",
-    "ScienzeTecnichePsicologiche": "Scienze e tecniche psicologiche",
-    "Astronomia": "Astronomia",
-    "chimica": "Chimica e chimica dei materiali",
-    "ChimicaAmbiente": "Chimica e tecnologie per l'ambiente e per i materiali (Ambiente)",
-    "ChimicaMateriali": "Chimica e tecnologie per l'ambiente e per i materiali (Materiali)",
-    "ChimicaIndustriale": "Chimica industriale",
-    "fisica": "Fisica",
-    "informatica": "Informatica",
-    "InformaticaManagement": "Informatica per il management",
-    "matematica": "Matematica",
-    "MetodologieChimicheProdottiProcessi": "Metodologie chimiche per prodotti e processi",
-    "ScienzaMateriali": "Scienza dei materiali",
-    "ScienzeAmbientali": "Scienze ambientali",
-    "ScienzeBiologiche": "Scienze biologiche",
-    "ScienzeGeologiche": "Scienze geologiche",
-    "ScienzeNaturali": "Scienze naturali",
-    "ScienzeStatistiche": "Scienze statistiche",
-    "EconomiaMarketingAgroIndustriale": "Economia e mercati agro-alimentari",
-    "ProduzioniAnimali": "Produzioni animali",
-    "ScienzeCulturaGastronomia": "Scienze e cultura della gastronomia",
-    "verdepaesaggio": "Scienze e tecnologie per il verde e il paesaggio",
-    "TecnologieAgrarie": "Tecnologie agrarie",
-    "TecnologieAlimentari": "Tecnologie alimentari",
-    "ScienzeTerritorioAmbiente": "Tecnologie per il territorio e l'ambiente agro-forestale",
-    "ViticolturaEnologia": "Viticoltura ed enologia",
-    "EducatoreServiziInfanzia": "Educatore nei servizi per l'infanzia",
-    "EducatoreSocialeCulturaleBologna": "Educatore sociale e culturale (Bologna)",
-    "EducatoreSocialeCulturale-Rimini": "Educatore sociale e culturale (Rimini)",
-    "ScienzeFormazionePrimaria": "Scienze della formazione primaria",
-    "ScienzeMotorieSportive": "Scienze delle attività motorie e sportive (Bologna)",
-    "ScienzeMotorieSportive-Rimini": "Scienze delle attività motorie e sportive (Rimini)",
-    "ScienzeInternazionaliDiplomatiche": "Scienze internazionali e diplomatiche",
-    "ScienzePoliticheSocialiInternazionali": "Scienze politiche, sociali e internazionali",
-    "SviluppoCooperazioneInternazionale": "Sviluppo e cooperazione internazionale",
-    "StatisticaFinanzaAssicurazioni": "Statistica, finanza e assicurazioni",
-    "ServizioSociale": "Servizio sociale",
-    "SociologiaForli": "Sociologia",
-    "ScienzeAntropologiche": "Antropologia, religioni, civiltà orientali",
-    "BeniCulturali": "Beni culturali",
-    "CulturePraticheModa": "Culture e pratiche della moda",
-    "DAMS": "Dams - discipline delle arti, della musica e dello spettacolo",
-    "Filosofia": "Filosofia",
-    "lettere": "Lettere",
-    "ScienzeComunicazione": "Scienze della comunicazione",
-    "storia": "Storia"
-};
+function trovaInsegnamento(codiceMateria, nomeDocente) {
+    // Usa il proxy di CORS Proxy
+    var proxyUrl = 'https://corsproxy.io/?';
+    var targetUrl = `https://www.unibo.it/it/studiare/dottorati-master-specializzazioni-e-altra-formazione/insegnamenti?search=True&codiceMateria=${codiceMateria}&annoAccademico=2024&CodeInsegnamentoButton=cerca`;
+
+    // Codifica l'URL di destinazione per evitare errori con caratteri speciali
+    var encodedUrl = encodeURIComponent(targetUrl);
+
+    // Esegui la richiesta HTTP attraverso CORS Proxy
+    return fetch(proxyUrl + encodedUrl)
+        .then(response => response.text())  // Ottieni la risposta come testo (HTML)
+        .then(html => {
+            // Crea un elemento temporaneo per fare il parsing dell'HTML
+            var doc = new DOMParser().parseFromString(html, 'text/html');
+
+            // Trova tutti gli elementi con la classe "mainteaching"
+            var insegnamenti = doc.querySelectorAll('.mainteaching');
+            var trovato = false;
+            var insegnamentoLink = "";
+
+            // Funzione ricorsiva per cercare in insegnamenti, figli e nipoti
+            function cercaDocenteInsegnamento(insegnamento) {
+                // Trova il docente nel nodo corrente
+                var docente = insegnamento.querySelector('.teacher');
+                if (docente && docente.textContent.trim() === nomeDocente) {
+                    // Trova il link dell'insegnamento principale
+                    var teachingLink = insegnamento.querySelector('.teachingname a');
+                    if (teachingLink) {
+                        insegnamentoLink = teachingLink.href;
+                        trovato = true;
+                        return true;  // Fermiamo la ricerca una volta trovato
+                    }
+                }
+
+                // Cerca nei figli (ul all'interno di insegnamento)
+                var figli = insegnamento.querySelectorAll('ul > li');
+                for (let figlio of figli) {
+                    if (cercaDocenteInsegnamento(figlio)) {
+                        return true;
+                    }
+
+                    // Cerca nei "nipoti" (ul con la classe "alphabetlist" dentro il figlio)
+                    var nipoti = figlio.querySelectorAll('ul.alphabetlist > li');
+                    for (let nipote of nipoti) {
+                        // Quando troviamo un nipote, risaliamo al figlio (insegnamento principale)
+                        var teachingLink = figlio.querySelector('.teachingname a');
+                        if (teachingLink) {
+                            insegnamentoLink = teachingLink.href;
+                            trovato = true;
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+
+            // Cerca tra gli insegnamenti principali
+            for (let insegnamento of insegnamenti) {
+                if (cercaDocenteInsegnamento(insegnamento)) {
+                    break; // Esci dal ciclo se il docente è stato trovato
+                }
+            }
+
+            // Restituisci il link dell'insegnamento trovato, altrimenti restituisci un messaggio
+            if (trovato) {
+                return insegnamentoLink;
+            } else {
+                throw new Error("Nessun insegnamento trovato per il docente specificato.");
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            throw new Error("Si è verificato un errore durante la ricerca.");
+        });
+}
+
+function cercaDocente(docenteNome) {
+    const corsProxy = "https://corsproxy.io/?";  // CORS Proxy che bypassa il blocco CORS
+    const url = `https://www.unibo.it/uniboweb/unibosearch/rubrica.aspx?tab=FullTextPanel&query=${encodeURIComponent(docenteNome)}&tipo=people`;
+
+    return new Promise((resolve, reject) => {  // Restituiamo una Promise
+        fetch(corsProxy + url)
+            .then(response => response.text())
+            .then(html => {
+                // Creiamo un oggetto DOM per poterlo scorrere
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Troviamo la riga contenente l'URL del docente
+                const docenteInfo = doc.querySelector('table.contact.vcard');
+                if (docenteInfo) {
+                    const webLinkElement = docenteInfo.querySelector('a.url');
+                    if (webLinkElement) {
+                        console.log(webLinkElement)
+                        const docenteWebLink = webLinkElement.textContent.trim();
+                        resolve(docenteWebLink);  // Risolviamo la Promise con il link
+                    } else {
+                        reject("Il docente non ha un sito web disponibile.");
+                    }
+                } else {
+                    reject("Docente non trovato.");
+                }
+            })
+            .catch(error => {
+                reject("Errore nel recupero dei dati: " + error);
+            });
+    });
+}

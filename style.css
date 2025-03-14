@@ -300,38 +300,3 @@ body.dark-mode option {
     color: #ecf0f1;
 }
 
-/* Inizializza il popup con lo stile per il tema chiaro di default */
-#date-picker {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    z-index: 9999;
-    border-radius: 5px;
-    padding: 10px;
-    background-color: #fff; /* Colore di sfondo per il tema chiaro */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    display: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* Regole per il tema scuro */
-body.dark-mode #date-picker {
-    background-color: #34495e; /* Sfondo scuro */
-    color: #ecf0f1; /* Colore del testo chiaro */
-    border: 2px solid #3498db;
-}
-
-/* Stato del popup quando il tema è scuro */
-body.dark-mode #date-picker:focus {
-    border-color: #1abc9c;
-    background-color: #3b4d61;
-}
-
-/* Forzare la transizione al colore giusto quando il tema cambia */
-body.dark-mode #date-picker {
-    background-color: #34495e !important; /* Impedisce che venga sovrascritto */
-    color: #ecf0f1 !important; /* Colore testo chiaro nel tema scuro */
-}
-

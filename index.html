@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script src="coursesData.js"></script>
     <script src="script.js"></script>
     <title>Orario UNIBO</title>
 </head>
@@ -26,8 +27,8 @@
                 <div class="popup-content">
                     <h2>Modifica Parametri</h2>
                     <label for="course">Corso:</label>
-                    <select id="course" onchange="fetchCurricula()"></select>
-                    <div id="curriculum-container"></div>
+                    <select id="course" onchange="handleCourseChange()"></select>
+                    <div id="curriculum-container" onchange="updateAnnoSelect()"></div>
                     <label for="anno">Anno:</label>
                     <select name="anno" id="anno">
                         <option value=0 selected disabled>Seleziona un anno</option>
