@@ -380,6 +380,14 @@ function closePopup() {
     document.getElementById("popup").style.display = "none";
 }
 
+// Funzione per gestire il popup dell'help
+function openHelp() {
+    document.getElementById("popup-help").style.display = "flex";
+}
+function closeHelp() {
+    document.getElementById("popup-help").style.display = "none";
+}
+
 
 function clearLocalStorage() {
     localStorage.removeItem('selectedCourse');

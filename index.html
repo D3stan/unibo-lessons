@@ -15,14 +15,17 @@
                 Orario delle Lezioni
             </div>
             <input type="date" id="date-picker" style="opacity: 0; position: absolute;" title="Select Date">
-            <button onclick="openPopup()">Impostazioni</button>
+            <div class="button-container">
+                <button onclick="openPopup()">Impostazioni</button>
+                <button onclick="openHelp()">Guida</button>
+            </div>
             <div id="loader" class="loader" style="display: none;">
                 <span>Caricamento...</span>
             </div>
             <div id="lezioni-container"></div>
             <div style="text-align: center;">
                 <p style="display: inline-block; padding: 10px; border: 2px solid gray; border-radius: 10px;">
-                    Made with ❤️ by <strong>d3stan</strong> & <strong>Tod</strong><br>with a touch of magic from <strong>ChatGPT</strong></p>
+                    Made with ❤️ by <span onclick="window.location.href='https://github.com/D3stan'"><strong>D3stan</strong></span> & <span onclick="window.location.href='https://github.com/TodeschiMatteo'"><strong>Tod</strong><br>with a touch of magic from <strong>ChatGPT</strong></p>
             </div>            
     
             <!-- Popup per cambiare i parametri -->
@@ -40,10 +43,21 @@
                         <option value=3>Terzo</option>
                     </select>
                     <div class="button-container">
-                        <button onclick="updateParams()" style="background-color: #4CAF50; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Aggiorna</button>
+                        <button onclick="updateParams()" style="background-color: #4CAF50; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">OK</button>
                         <button onclick="clearLocalStorage()" style="background-color: #e74c3c; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Reset</button>
                         <button id="theme-toggle" style="background-color: #3498db; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Tema</button>
                     </div>
+                </div>
+            </div>
+            <div id="popup-help">
+                <div class="popup-content">
+                    <p>Per impostare il corso utilizza la sezione Impostazioni</p>
+                    <p>Puoi cambiare il tema chiaro/scuro utilizza dalle Impostazioni</p>
+                    <p>Clicca sopra il giorno per cambiarlo velocemente usando il caledario</p>
+                    <p>Clicca sopra un insegnamento per aprire la pagina del corso</p>
+                    <p>Clicca sopra un docente per aprire la pagina del docente</p>
+                    <p>Se disponibile verra visualizzato un pulasnte per connettersi all'aula virtuale Teams</p>
+                    <button onclick="closeHelp()" style="background-color: #4CAF50; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">OK</button>
                 </div>
             </div>
         </div>

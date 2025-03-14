@@ -108,7 +108,7 @@ button {
 }
 
 
-#popup {
+#popup, #popup-help {
     display: none;
     position: fixed;
     top: 0;
@@ -263,7 +263,7 @@ body.dark-mode .nav-buttons button:hover {
     background-color: #3498db;
 }
 
-body.dark-mode #popup {
+body.dark-mode #popup, #popup-help {
     background-color: rgba(0, 0, 0, 0.8);
 }
 
