@@ -308,6 +308,7 @@ async function getLezioni(startDate, endDate) {
         const teacher = lezione.docente || "Docente non disponibile";
         const aula = lezione.aule[0]?.des_edificio || "Aula non disponibile";
         const teachingCode = lezione.cod_modulo;
+        const teamsUrl = lezione.teams ? lezione.teams : null;
         const lezioneDiv = document.createElement("div");
 
         // Crea il div della lezione senza il link subito
@@ -317,7 +318,16 @@ async function getLezioni(startDate, endDate) {
             <p><strong>Orario:</strong> ${time}</p>
             <p id="docente"><strong>Docente: </strong>${teacher}</p>
             <p class="aula"><strong>Aula:</strong> ${aula}</p>
+            ${teamsUrl ? `<p class="teams" style="color: blue; text-decoration: underline; cursor: pointer;"><strong>Aula Virtuale</strong></p>` : ''}
         `;
+        
+        // Se esiste un link a Teams, aggiunge l'evento per aprire il link al click
+        if (teamsUrl) {
+            const teamsElement = lezioneDiv.querySelector(".teams");
+            teamsElement.addEventListener("click", () => {
+                window.open(teamsUrl, "_blank"); // Apre il link in una nuova scheda
+            });
+        }
 
         // Aggiungi l'evento click sul titolo per ottenere il link
         lezioneDiv.querySelector("h2").addEventListener("click", function() {
