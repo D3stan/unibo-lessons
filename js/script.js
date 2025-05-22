@@ -9,16 +9,62 @@ let course = null;  // Course parameter
 let anno = 1;  // Year parameter
 let curriculum = null
 
+// Function to load language strings
+function loadLanguage(lang) {
+    try {
+        // Get strings from the global languageStrings object
+        const strings = window.languageStrings[lang] || window.languageStrings["it"]; // Default to Italian if language not found
+        
+        // Update all elements with data-i18n attribute
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (strings[key]) el.textContent = strings[key];
+        });
+        
+        // Update page title
+        if (strings["page_title"] && document.title) {
+            document.title = strings["page_title"];
+        }
+        
+        return strings; // Return strings for use outside DOM updates
+    } catch (error) {
+        console.error("Error loading language:", error);
+        return window.languageStrings["it"]; // Fallback to Italian
+    }
+}
+
+// Global language strings object
+let strings = {};
+
 window.addEventListener('load', () => {
+    // Get the saved language or default to Italian
+    const savedLanguage = localStorage.getItem('selectedLanguage') || 'it';
+    
+    // Load language strings
+    strings = loadLanguage(savedLanguage);
+    
+    // Set the language selector to the current language
+    document.getElementById('language').value = savedLanguage;
+    
+    // Add event listener for language changes
+    document.getElementById('language').addEventListener('change', function() {
+        const newLanguage = this.value;
+        localStorage.setItem('selectedLanguage', newLanguage);
+        strings = loadLanguage(newLanguage);
+        
+        // Update dynamic content that isn't controlled by data-i18n
+        updateDynamicContent();
+    });
+    
     const themeToggleButton = document.getElementById('theme-toggle');
     const savedTheme = localStorage.getItem('theme');
 
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
-        themeToggleButton.textContent = 'Tema chiaro';  // Set button text to "Light theme" when theme is dark
+        themeToggleButton.textContent = strings.light_theme;
     } else {
         document.body.classList.remove('dark-mode');
-        themeToggleButton.textContent = 'Tema scuro';  // Set button text to "Dark theme" when theme is light
+        themeToggleButton.textContent = strings.dark_theme;
     }
     const savedCourse = localStorage.getItem('selectedCourse');
     const savedAnno = localStorage.getItem('selectedAnno');
@@ -49,7 +95,7 @@ window.addEventListener('load', () => {
             currentEndDate = formatDate(selectedDate);
             // Update title with new date
             const dayName = getDayName(selectedDate);
-            document.getElementById("selected-day").textContent = `Lezioni del ${dayName} ${currentStartDate}`;
+            document.getElementById("selected-day").textContent = `${strings.schedule_of} ${dayName} ${currentStartDate}`;
             // Reload classes for the new date
             getLezioni(currentStartDate, currentEndDate);
         }
@@ -63,10 +109,10 @@ window.addEventListener('load', () => {
 
         // Change button text
         if (document.body.classList.contains('dark-mode')) {
-            themeToggleButton.textContent = 'Tema chiaro';  // When theme is dark, change text to "Light theme"
+            themeToggleButton.textContent = strings.light_theme;
             localStorage.setItem('theme', 'dark');
         } else {
-            themeToggleButton.textContent = 'Tema scuro';  // When theme is light, change text to "Dark theme"
+            themeToggleButton.textContent = strings.dark_theme;
             localStorage.setItem('theme', 'light');
         }
     });
@@ -96,7 +142,7 @@ function loadCourses() {
     defaultOption.value = "";
     defaultOption.disabled = true;
     defaultOption.selected = true;
-    defaultOption.textContent = "Seleziona un corso";
+    defaultOption.textContent = strings.select_course || "Seleziona un corso";
     courseSelect.appendChild(defaultOption);
 
     // Populate menu with courses
@@ -220,17 +266,27 @@ function updateAnnoSelect() {
     defaultOption.value = 0;
     defaultOption.selected = true;
     defaultOption.disabled = true;
-    defaultOption.textContent = "Seleziona un anno";
+    defaultOption.textContent = strings.select_year || "Seleziona un anno";
     annoSelect.appendChild(defaultOption);
 
     // Check course type
     const isSingleCycle = type.trim().toLowerCase() === "singlecycle" || type.trim().toLowerCase() === "magistralecu";
     // Add year options based on course type
     const maxYear = isSingleCycle ? 5 : 3;
+    
+    // Year text mapping from strings
+    const yearTexts = [
+        strings.first_year || "Primo", 
+        strings.second_year || "Secondo", 
+        strings.third_year || "Terzo", 
+        "Quarto", 
+        "Quinto"
+    ];
+    
     for (let i = 1; i <= maxYear; i++) {
         const option = document.createElement("option");
         option.value = i;
-        option.textContent = `Anno ${i}`;
+        option.textContent = `${yearTexts[i-1]}`;
         annoSelect.appendChild(option);
     }
 }
@@ -258,7 +314,7 @@ function updateParams() {
 async function getLezioni(startDate, endDate) {
     if(!course){
         document.getElementById("loader").style.display = "none";
-        document.getElementById("lezioni-container").innerHTML = "<p class='error'>Configura il tuo corso dalle impostazioni</p>";
+        document.getElementById("lezioni-container").innerHTML = `<p class='error'>${strings.configure_course || "Configura il tuo corso dalle impostazioni"}</p>`;
         return;
     }
 
@@ -293,27 +349,27 @@ async function getLezioni(startDate, endDate) {
     // If lezioni is still null, both URLs failed
     if (lezioni === null) {
         document.getElementById("loader").style.display = "none";
-        document.getElementById("lezioni-container").innerHTML = "<p class='error'>Errore nel recupero delle lezioni. Riprova più tardi.</p>";
+        document.getElementById("lezioni-container").innerHTML = `<p class='error'>${strings.error_loading || "Errore nel recupero delle lezioni. Riprova più tardi."}</p>`;
         return;
     }
 
     const selectedDayElement = document.getElementById("selected-day");
     const dayName = getDayName(currentDate);
-    selectedDayElement.textContent = `Lezioni del ${dayName} ${startDate}`;
+    selectedDayElement.textContent = `${strings.schedule_of} ${dayName} ${startDate}`;
     document.getElementById("loader").style.display = "none";
     const lezioniContainer = document.getElementById("lezioni-container");
 
     if (lezioni.length === 0) {
-        lezioniContainer.innerHTML = "<p class='warn'>Nessuna lezione disponibile</p>";
+        lezioniContainer.innerHTML = `<p class='warn'>${strings.no_lessons || "Nessuna lezione disponibile"}</p>`;
         return;
     }
 
     lezioniContainer.innerHTML = '';
     lezioni.forEach(lezione => {
-        const title = lezione.title || "Titolo non disponibile";
-        const time = lezione.time || "Orario non disponibile";
-        const teacher = lezione.docente || "Docente non disponibile";
-        const aula = lezione.aule[0]?.des_edificio || "Aula non disponibile";
+        const title = lezione.title || (strings.title_unavailable || "Titolo non disponibile");
+        const time = lezione.time || (strings.time_unavailable || "Orario non disponibile");
+        const teacher = lezione.docente || (strings.teacher_unavailable || "Docente non disponibile");
+        const aula = lezione.aule[0]?.des_edificio || (strings.classroom_unavailable || "Aula non disponibile");
         const teachingCode = lezione.cod_modulo;
         const teamsUrl = lezione.teams ? lezione.teams : null;
         const lezioneDiv = document.createElement("div");
@@ -322,10 +378,10 @@ async function getLezioni(startDate, endDate) {
         lezioneDiv.classList.add("lezione");
         lezioneDiv.innerHTML = `
             <h2>${title}</h2>
-            <p><strong>Orario:</strong> ${time}</p>
-            <p id="docente"><strong>Docente: </strong>${teacher}</p>
-            <p class="aula"><strong>Aula:</strong> ${aula}</p>
-            ${teamsUrl ? `<p class="teams" style="color: blue; text-decoration: underline; cursor: pointer;"><strong>Aula Virtuale</strong></p>` : ''}
+            <p><strong>${strings.time_label || "Orario:"}</strong> ${time}</p>
+            <p id="docente"><strong>${strings.teacher_label || "Docente:"} </strong>${teacher}</p>
+            <p class="aula"><strong>${strings.classroom_label || "Aula:"}</strong> ${aula}</p>
+            ${teamsUrl ? `<p class="teams" style="color: blue; text-decoration: underline; cursor: pointer;"><strong>${strings.virtual_classroom || "Aula Virtuale"}</strong></p>` : ''}
         `;
         
         // If Teams link exists, add event to open link on click
@@ -348,7 +404,7 @@ async function getLezioni(startDate, endDate) {
                 .catch(error => {
                     console.log(error.message);
                     // Error handling if not found
-                    alert("Insegnamento non trovato.");
+                    alert(strings.no_teaching_found || "Insegnamento non trovato.");
                 });
         });
 
@@ -363,7 +419,7 @@ async function getLezioni(startDate, endDate) {
                 .catch(error => {
                     console.log(error.message);
                     // Error handling if not found
-                    alert("Docente non trovato.");
+                    alert(strings.teacher_not_found || "Docente non trovato.");
                 });
         });
 
@@ -471,12 +527,12 @@ function trovaInsegnamento(codiceMateria, nomeDocente) {
             if (trovato) {
                 return insegnamentoLink;
             } else {
-                throw new Error("Nessun insegnamento trovato per il docente specificato.");
+                throw new Error(strings.no_teaching_found || "Nessun insegnamento trovato per il docente specificato.");
             }
         })
         .catch(error => {
             console.error(error);
-            throw new Error("Si è verificato un errore durante la ricerca.");
+            throw new Error(strings.error_searching || "Si è verificato un errore durante la ricerca.");
         });
 }
 
@@ -501,14 +557,34 @@ function cercaDocente(docenteNome) {
                         const docenteWebLink = webLinkElement.textContent.trim();
                         resolve(docenteWebLink);  // Resolve Promise with link
                     } else {
-                        reject("Il docente non ha un sito web disponibile.");
+                        reject(strings.no_website || "Il docente non ha un sito web disponibile.");
                     }
                 } else {
-                    reject("Docente non trovato.");
+                    reject(strings.teacher_not_found || "Docente non trovato.");
                 }
             })
             .catch(error => {
-                reject("Errore nel recupero dei dati: " + error);
+                reject(strings.error_searching + " " + error || "Errore nel recupero dei dati: " + error);
             });
     });
+}
+
+// Function to update dynamic content after language change
+function updateDynamicContent() {
+    // Update the selected day text
+    const dayName = getDayName(currentDate);
+    document.getElementById("selected-day").textContent = `${strings.schedule_of} ${dayName} ${currentStartDate}`;
+    
+    // Update theme toggle button text
+    const themeToggleButton = document.getElementById('theme-toggle');
+    if (document.body.classList.contains('dark-mode')) {
+        themeToggleButton.textContent = strings.light_theme;
+    } else {
+        themeToggleButton.textContent = strings.dark_theme;
+    }
+    
+    // Re-render lessons if they exist
+    if (course) {
+        getLezioni(currentStartDate, currentEndDate);
+    }
 }

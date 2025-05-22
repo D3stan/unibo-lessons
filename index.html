@@ -5,22 +5,26 @@
     <link rel="stylesheet" type="text/css" href="./css/style.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- Language files -->
+    <script src="./lang/it.js"></script>
+    <script src="./lang/en.js"></script>
+    <!-- App scripts -->
     <script src="./js/coursesData.js"></script>
     <script src="./js/script.js"></script>
-    <title>Orario UNIBO</title>
+    <title data-i18n="page_title">Orario UNIBO</title>
 </head>
     <body>
         <div class="container">
-            <div id="selected-day" onclick="openDatePicker()" style="cursor: pointer; text-align: center; margin-bottom: 20px; font-size: 2rem; font-weight: bold;">
+            <div id="selected-day" onclick="openDatePicker()" style="cursor: pointer; text-align: center; margin-bottom: 20px; font-size: 2rem; font-weight: bold;" data-i18n="main_title">
                 Orario delle Lezioni
             </div>
             <input type="date" id="date-picker" style="opacity: 0; position: absolute;" title="Select Date">
             <div class="button-container">
-                <button onclick="openPopup()">Impostazioni</button>
-                <button onclick="openHelp()">Guida</button>
+                <button onclick="openPopup()" data-i18n="settings_button">Impostazioni</button>
+                <button onclick="openHelp()" data-i18n="guide_button">Guida</button>
             </div>
             <div id="loader" class="loader" style="display: none;">
-                <span>Caricamento...</span>
+                <span data-i18n="loading_text">Caricamento...</span>
             </div>
             <div id="lezioni-container"></div>
             <div style="text-align: center;">
@@ -34,42 +38,51 @@
             <!-- Popup for changing parameters -->
             <div id="popup">
                 <div class="popup-content">
-                    <h2>Modifica Parametri</h2>
-                    <label for="course">Corso:</label>
+                    <h2 data-i18n="params_title">Modifica Parametri</h2>
+                    <label for="course" data-i18n="course_label">Corso:</label>
                     <select id="course" onchange="handleCourseChange()"></select>
                     <div id="curriculum-container" onchange="updateAnnoSelect()"></div>
-                    <label for="anno">Anno:</label>
+                    <label for="anno" data-i18n="year_label">Anno:</label>
                     <select name="anno" id="anno">
-                        <option value=0 selected disabled>Seleziona un anno</option>
-                        <option value=1 >Primo</option>
-                        <option value=2>Secondo</option>
-                        <option value=3>Terzo</option>
+                        <option value=0 selected disabled data-i18n="select_year">Seleziona un anno</option>
+                        <option value=1 data-i18n="first_year">Primo</option>
+                        <option value=2 data-i18n="second_year">Secondo</option>
+                        <option value=3 data-i18n="third_year">Terzo</option>
                     </select>
+                    
+                    <!-- Language selector -->
+                    <label for="language" data-i18n="language_label">Lingua:</label>
+                    <select id="language" style="margin-top: 15px; margin-bottom: 15px;">
+                        <option value="it" selected>Italiano</option>
+                        <option value="en">English</option>
+                        <!-- Add more languages as needed -->
+                    </select>
+                    
                     <div class="button-container">
-                        <button onclick="updateParams()" style="background-color: #4CAF50; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">OK</button>
-                        <button onclick="clearLocalStorage()" style="background-color: #e74c3c; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Reset</button>
-                        <button id="theme-toggle" style="background-color: #3498db; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Tema</button>
+                        <button onclick="updateParams()" style="background-color: #4CAF50; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;" data-i18n="ok_button">OK</button>
+                        <button onclick="clearLocalStorage()" style="background-color: #e74c3c; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;" data-i18n="reset_button">Reset</button>
+                        <button id="theme-toggle" style="background-color: #3498db; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;" data-i18n="theme_button">Tema</button>
                     </div>
                 </div>
             </div>
             <div id="popup-help">
                 <div class="popup-content">
-                    <p><strong>Per impostare il corso utilizza la sezione Impostazioni</strong></p>
+                    <p><strong data-i18n="help_title">Per impostare il corso utilizza la sezione Impostazioni</strong></p>
                     <p>-------------</p>
-                    <p>Puoi cambiare il tema chiaro/scuro dalle Impostazioni</p>
-                    <p>Clicca sopra il giorno per cambiarlo velocemente usando il caledario</p>
-                    <p>Clicca sopra un insegnamento per aprire la pagina del corso</p>
-                    <p>Clicca sopra un docente per aprire la pagina del docente</p>
-                    <p>Se disponibile verrà visualizzato un pulsante per connettersi all'aula virtuale Teams</p>
-                    <p>In caso di problemi, eseguire un reset dalle Impostazioni e riconfigurare il proprio corso</p>
-                    <button onclick="closeHelp()" style="background-color: #4CAF50; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">OK</button>
+                    <p data-i18n="help_theme">Puoi cambiare il tema chiaro/scuro dalle Impostazioni</p>
+                    <p data-i18n="help_date">Clicca sopra il giorno per cambiarlo velocemente usando il caledario</p>
+                    <p data-i18n="help_course">Clicca sopra un insegnamento per aprire la pagina del corso</p>
+                    <p data-i18n="help_teacher">Clicca sopra un docente per aprire la pagina del docente</p>
+                    <p data-i18n="help_teams">Se disponibile verrà visualizzato un pulsante per connettersi all'aula virtuale Teams</p>
+                    <p data-i18n="help_reset">In caso di problemi, eseguire un reset dalle Impostazioni e riconfigurare il proprio corso</p>
+                    <button onclick="closeHelp()" style="background-color: #4CAF50; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;" data-i18n="ok_button">OK</button>
                 </div>
             </div>
         </div>
         <div class="nav-buttons">
             <div class="nav-group">
-                <button id="previous-day" onclick="changeDay(-1)">← Precedente</button>
-                <button id="next-day" onclick="changeDay(1)">Successivo →</button>
+                <button id="previous-day" onclick="changeDay(-1)" data-i18n="previous_button">← Precedente</button>
+                <button id="next-day" onclick="changeDay(1)" data-i18n="next_button">Successivo →</button>
             </div>       
         </div>
         
