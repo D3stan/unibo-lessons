@@ -44,5 +44,7 @@ window.languageStrings.en = {
   "no_teaching_found": "Course not found.",
   "teacher_not_found": "Teacher not found.",
   "no_website": "The teacher does not have a website available.",
-  "error_searching": "An error occurred during the search."
+  "error_searching": "An error occurred during the search.",
+  "footer_made_with": "Made with ❤️ by",
+  "footer_magic_from": "with a touch of magic from"
 }; 

@@ -44,5 +44,7 @@ window.languageStrings.it = {
   "no_teaching_found": "Insegnamento non trovato.",
   "teacher_not_found": "Docente non trovato.",
   "no_website": "Il docente non ha un sito web disponibile.",
-  "error_searching": "Si è verificato un errore durante la ricerca."
+  "error_searching": "Si è verificato un errore durante la ricerca.",
+  "footer_made_with": "Fatto con ❤️ da",
+  "footer_magic_from": "con un tocco di magia di"
 }; 
