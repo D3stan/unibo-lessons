@@ -81,7 +81,7 @@ h1 {
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: #f4f4f9; /* Colore originale */
+    background-color: #f4f4f9; /* Original color */
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: space-between;
@@ -96,11 +96,11 @@ h1 {
 
 .nav-buttons .nav-group {
     display: flex;
-    gap: 10px; /* Distanza tra i pulsanti */
+    gap: 10px; /* Space between buttons */
 }
 
 button {
-    background-color: #3498db; /* Colore originale */
+    background-color: #3498db; /* Original color */
     color: white;
     border: none;
     border-radius: 5px;
@@ -186,7 +186,7 @@ option {
     width: auto;
 }
 
-/* Stile per Select (Light Mode) */
+/* Style for Select (Light Mode) */
 select {
     width: 100%;
     padding: 10px;
@@ -209,7 +209,7 @@ select:focus {
     background-color: #d5eaf3;
 }
 
-/* Stile per le Opzioni */
+/* Style for Options */
 option {
     background-color: #fff;
     color: #2c3e50;
@@ -228,7 +228,7 @@ body.dark-mode .container {
 }
 
 body.dark-mode .nav-buttons {
-    background-color: #34495e; /* Colore originale */
+    background-color: #34495e; /* Original color */
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
 }
 

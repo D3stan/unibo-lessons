@@ -5,8 +5,8 @@ let currentEndDate = formatDate(currentDate);
 let datePicker
 
 let type = null;
-let course = null;  // Parametro corso
-let anno = 1;  // Parametro anno
+let course = null;  // Course parameter
+let anno = 1;  // Year parameter
 let curriculum = null
 
 window.addEventListener('load', () => {
@@ -15,15 +15,15 @@ window.addEventListener('load', () => {
 
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
-        themeToggleButton.textContent = 'Tema chiaro';  // Imposta il testo del pulsante su "Tema chiaro" quando il tema è scuro
+        themeToggleButton.textContent = 'Tema chiaro';  // Set button text to "Light theme" when theme is dark
     } else {
         document.body.classList.remove('dark-mode');
-        themeToggleButton.textContent = 'Tema scuro';  // Imposta il testo del pulsante su "Tema scuro" quando il tema è chiaro
+        themeToggleButton.textContent = 'Tema scuro';  // Set button text to "Dark theme" when theme is light
     }
     const savedCourse = localStorage.getItem('selectedCourse');
     const savedAnno = localStorage.getItem('selectedAnno');
     const savedCurriculum = localStorage.getItem('selectedCurriculum')!="null" ? localStorage.getItem('selectedCurriculum') : null;
-    // Se ci sono parametri salvati, applicali
+    // If there are saved parameters, apply them
     if (savedCourse) {
         course = savedCourse;
         document.getElementById("course").value = savedCourse;
@@ -35,46 +35,46 @@ window.addEventListener('load', () => {
     if (savedCurriculum) {
         curriculum = savedCurriculum;
     }
-    loadCourses(); // Carica i corsi al caricamento della pagina
+    loadCourses(); // Load courses when page loads
     getLezioni(currentStartDate, currentEndDate);
 
 
     datePicker = document.getElementById("date-picker");
-    // Quando l'utente seleziona una data
+    // When user selects a date
     datePicker.addEventListener("change", function () {
         const selectedDate = new Date(this.value);
-        if (!isNaN(selectedDate.getTime())) {  // Verifica che la data sia valida
+        if (!isNaN(selectedDate.getTime())) {  // Verify that date is valid
             currentDate = selectedDate;
             currentStartDate = formatDate(selectedDate);
             currentEndDate = formatDate(selectedDate);
-            // Aggiorna il titolo con la nuova data
+            // Update title with new date
             const dayName = getDayName(selectedDate);
             document.getElementById("selected-day").textContent = `Lezioni del ${dayName} ${currentStartDate}`;
-            // Ricarica le lezioni per la nuova data
+            // Reload classes for the new date
             getLezioni(currentStartDate, currentEndDate);
         }
     });
 
     
-    // Funzione per cambiare il tema
+    // Function to change theme
     themeToggleButton.addEventListener('click', () => {
-        // Cambia la classe del body tra dark-mode e la modalità predefinita
+        // Toggle body class between dark-mode and default mode
         document.body.classList.toggle('dark-mode');
 
-        // Cambia il testo del pulsante
+        // Change button text
         if (document.body.classList.contains('dark-mode')) {
-            themeToggleButton.textContent = 'Tema chiaro';  // Quando il tema è scuro, cambia il testo a "Tema chiaro"
+            themeToggleButton.textContent = 'Tema chiaro';  // When theme is dark, change text to "Light theme"
             localStorage.setItem('theme', 'dark');
         } else {
-            themeToggleButton.textContent = 'Tema scuro';  // Quando il tema è chiaro, cambia il testo a "Tema scuro"
+            themeToggleButton.textContent = 'Tema scuro';  // When theme is light, change text to "Dark theme"
             localStorage.setItem('theme', 'light');
         }
     });
 });
 
 function openDatePicker() {
-    datePicker.style.display = "block";  // Mostra il calendario
-    datePicker.showPicker();  // Apre direttamente il selettore di data
+    datePicker.style.display = "block";  // Show calendar
+    datePicker.showPicker();  // Directly open date picker
 }
 
 function getDayName(date) {
@@ -87,11 +87,11 @@ function formatDate(date) {
     const day = date.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
 }
-// Popola il menu a tendina dei corsi
+// Populate course dropdown menu
 function loadCourses() {
     const courseSelect = document.getElementById("course");
 
-    // Aggiungi un'opzione vuota di default
+    // Add an empty default option
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
     defaultOption.disabled = true;
@@ -99,30 +99,30 @@ function loadCourses() {
     defaultOption.textContent = "Seleziona un corso";
     courseSelect.appendChild(defaultOption);
 
-    // Popola il menu con i corsi
+    // Populate menu with courses
     for (const [value, data] of Object.entries(coursesData)) {
         if (data.department) {
             const departmentOption = document.createElement("option");
-            departmentOption.value = "";  // Il valore può essere vuoto, poiché è solo un'etichetta
-            departmentOption.disabled = true;  // Disabilita la voce per renderla non cliccabile
-            departmentOption.textContent = data.department;  // Imposta il testo della voce al nome del dipartimento
+            departmentOption.value = "";  // Value can be empty since it's just a label
+            departmentOption.disabled = true;  // Disable entry to make it not clickable
+            departmentOption.textContent = data.department;  // Set text of entry to department name
             courseSelect.appendChild(departmentOption);
-            continue; // Salta la parte successiva che crea un'altra opzione vuota
+            continue; // Skip the next part that creates another empty option
         }
         const option = document.createElement("option");
         option.value = value;
-        option.textContent = data.course_name; // Accede al nome del corso
+        option.textContent = data.course_name; // Access course name
         courseSelect.appendChild(option);
     }
 
-    // Se c'è un corso salvato, selezionalo
+    // If there's a saved course, select it
     const savedCourse = localStorage.getItem('selectedCourse');
     if (savedCourse && coursesData[savedCourse]) {
         courseSelect.value = savedCourse;
-        type = coursesData[savedCourse].type; // Memorizza il tipo
+        type = coursesData[savedCourse].type; // Store type
     }
 
-    // Aggiungi un listener per salvare il corso selezionato e il suo tipo
+    // Add listener to save selected course and its type
     courseSelect.addEventListener("change", function () {
         const selectedValue = courseSelect.value;
         if (coursesData[selectedValue]) {
@@ -133,36 +133,36 @@ function loadCourses() {
     });
 }
 function handleCourseChange() {
-    // Ottieni il corso selezionato
+    // Get selected course
     const courseSelect = document.getElementById("course");
     const selectedCourse = courseSelect.value;
 
-    // Verifica se è stato selezionato un corso valido
+    // Check if a valid course has been selected
     if (selectedCourse && coursesData[selectedCourse]) {
-        // Recupera il tipo di corso
+        // Retrieve course type
         type = coursesData[selectedCourse].type;
-        // Aggiorna la selezione degli anni
+        // Update year selection
         updateAnnoSelect();
 
-        // Memorizza il corso e il tipo nel localStorage
+        // Store course and type in localStorage
         localStorage.setItem('selectedCourse', selectedCourse);
         localStorage.setItem('selectedCourseType', type);
     }
     fetchCurricula()
 }
 
-// Funzione che viene chiamata quando un corso viene selezionato
+// Function called when a course is selected
 async function fetchCurricula() {
     const courseValue = document.getElementById("course").value;
     const curriculumContainer = document.getElementById("curriculum-container");
     
-    // Se non è selezionato nessun corso, esci dalla funzione
+    // If no course is selected, exit function
     if (!courseValue) return;
 
-    // Pulisce il contenitore del curriculum (rimuove la select esistente)
+    // Clear curriculum container (remove existing select)
     curriculumContainer.innerHTML = '';
     
-    // Definiamo gli URL da tentare
+    // Define URLs to try
     const urls = [
         `https://corsi.unibo.it/${type}/${courseValue}/orario-lezioni/@@available_curricula`,
         `https://corsi.unibo.it/${type}/${courseValue}/timetable/@@available_curricula`
@@ -170,52 +170,52 @@ async function fetchCurricula() {
 
     let curricula = null;
 
-    // Proviamo entrambi gli URL, partendo dal primo
+    // Try both URLs, starting with the first
     for (let url of urls) {
         try {
             const response = await fetch(url);
             if (response.ok) {
                 curricula = await response.json();
-                break; // Se la risposta è ok, esci dal ciclo
+                break; // If response is ok, exit loop
             }
         } catch (error) {}
     }
-    // Se curricula è ancora null, significa che entrambi gli URL hanno fallito
+    // If curricula is still null, both URLs failed
     if (curricula === null) {
-        console.error("Errore nel caricamento dei curricula da entrambi gli URL.");
+        console.error("Error loading curricula from both URLs.");
         return;
     }
 
-    // Se ci sono più di un curriculum, crea un nuovo menu a tendina
+    // If there's more than one curriculum, create a new dropdown
     if (curricula.length > 1) {
         const curriculumSelect = document.createElement("select");
         curriculumSelect.id = "curriculum";
         curricula.forEach(curriculum => {
             const option = document.createElement("option");
             option.value = curriculum.value;
-            // Modifica il label per avere la prima lettera maiuscola e il resto minuscolo
+            // Modify label to have first letter uppercase and rest lowercase
             const formattedLabel = curriculum.label.charAt(0).toUpperCase() + curriculum.label.slice(1).toLowerCase();
             option.textContent = formattedLabel;
             curriculumSelect.appendChild(option);
         });
         curriculumContainer.appendChild(curriculumSelect);
-        curriculumContainer.style.display = "block"; // Rendi visibile il contenitore
+        curriculumContainer.style.display = "block"; // Make container visible
     } else if (curricula.length === 1) {
-        // Se c'è solo un curriculum, lo nascondiamo
-        curriculumContainer.style.display = "none"; // Nascondiamo la select
+        // If there's only one curriculum, hide it
+        curriculumContainer.style.display = "none"; // Hide select
     } else {
-        // Se non ci sono curricula, non mostrare la select
-        curriculumContainer.style.display = "none"; // Nascondiamo il contenitore
+        // If there are no curricula, don't show select
+        curriculumContainer.style.display = "none"; // Hide container
     }
 }
 
 function updateAnnoSelect() {
     const annoSelect = document.getElementById("anno");
 
-    // Rimuove tutte le opzioni attuali (tranne la prima)
+    // Remove all current options (except first)
     annoSelect.innerHTML = '';
     
-    // Aggiungi l'opzione di default
+    // Add default option
     const defaultOption = document.createElement("option");
     defaultOption.value = 0;
     defaultOption.selected = true;
@@ -223,9 +223,9 @@ function updateAnnoSelect() {
     defaultOption.textContent = "Seleziona un anno";
     annoSelect.appendChild(defaultOption);
 
-    // Controlla il tipo di corso
+    // Check course type
     const isSingleCycle = type.trim().toLowerCase() === "singlecycle" || type.trim().toLowerCase() === "magistralecu";
-    // Aggiungi le opzioni degli anni in base al tipo di corso
+    // Add year options based on course type
     const maxYear = isSingleCycle ? 5 : 3;
     for (let i = 1; i <= maxYear; i++) {
         const option = document.createElement("option");
@@ -234,7 +234,7 @@ function updateAnnoSelect() {
         annoSelect.appendChild(option);
     }
 }
-// Funzione per aggiornare i parametri e ricaricare le lezioni
+// Function to update parameters and reload classes
 function updateParams() {
     const newCourse = document.getElementById("course").value;
     const newAnno = document.getElementById("anno").value;
@@ -242,11 +242,11 @@ function updateParams() {
     if (newCourse && newAnno && newAnno!=0) {
         course = newCourse;
         anno = parseInt(newAnno);
-        // Se è selezionato un curriculum, puoi usarlo per aggiornare la URL o altri parametri
+        // If a curriculum is selected, use it to update URL or other parameters
         if (curriculumValue) {
             curriculum=curriculumValue  
         }
-        // Salvataggio dei parametri nel localStorage
+        // Save parameters in localStorage
         localStorage.setItem('selectedCourse', course);
         localStorage.setItem('selectedAnno', anno);
         localStorage.setItem('selectedCurriculum', curriculum);
@@ -254,7 +254,7 @@ function updateParams() {
         closePopup();
     }
 }
-// Funzione per caricare le lezioni
+// Function to load classes
 async function getLezioni(startDate, endDate) {
     if(!course){
         document.getElementById("loader").style.display = "none";
@@ -262,13 +262,13 @@ async function getLezioni(startDate, endDate) {
         return;
     }
 
-    // Costruzione degli URL
+    // URL construction
     let urls = [
         `https://corsi.unibo.it/${type}/${course}/orario-lezioni/@@orario_reale_json?start=${startDate}&end=${endDate}&anno=${anno}`,
         `https://corsi.unibo.it/${type}/${course}/timetable/@@orario_reale_json?start=${startDate}&end=${endDate}&anno=${anno}`
     ];
 
-    // Aggiungi il curriculum se è presente
+    // Add curriculum if present
     try {
         if (curriculum) {
             urls = urls.map(url => url + `&curricula=${curriculum}`);
@@ -279,18 +279,18 @@ async function getLezioni(startDate, endDate) {
 
     let lezioni = null;
 
-    // Proviamo entrambi gli URL
+    // Try both URLs
     for (let url of urls) {
         try {
             const response = await fetch(url);
             if (response.ok) {
                 lezioni = await response.json();
-                break; // Se la risposta è ok, esci dal ciclo
+                break; // If response is ok, exit loop
             }
         } catch (error) {}
     }
 
-    // Se lezioni è ancora null, significa che entrambi gli URL hanno fallito
+    // If lezioni is still null, both URLs failed
     if (lezioni === null) {
         document.getElementById("loader").style.display = "none";
         document.getElementById("lezioni-container").innerHTML = "<p class='error'>Errore nel recupero delle lezioni. Riprova più tardi.</p>";
@@ -318,7 +318,7 @@ async function getLezioni(startDate, endDate) {
         const teamsUrl = lezione.teams ? lezione.teams : null;
         const lezioneDiv = document.createElement("div");
 
-        // Crea il div della lezione senza il link subito
+        // Create lesson div without link immediately
         lezioneDiv.classList.add("lezione");
         lezioneDiv.innerHTML = `
             <h2>${title}</h2>
@@ -328,26 +328,26 @@ async function getLezioni(startDate, endDate) {
             ${teamsUrl ? `<p class="teams" style="color: blue; text-decoration: underline; cursor: pointer;"><strong>Aula Virtuale</strong></p>` : ''}
         `;
         
-        // Se esiste un link a Teams, aggiunge l'evento per aprire il link al click
+        // If Teams link exists, add event to open link on click
         if (teamsUrl) {
             const teamsElement = lezioneDiv.querySelector(".teams");
             teamsElement.addEventListener("click", () => {
-                window.open(teamsUrl, "_blank"); // Apre il link in una nuova scheda
+                window.open(teamsUrl, "_blank"); // Open link in new tab
             });
         }
 
-        // Aggiungi l'evento click sul titolo per ottenere il link
+        // Add click event on title to get link
         lezioneDiv.querySelector("h2").addEventListener("click", function() {
             trovaInsegnamento(teachingCode.split('_')[0], teacher)
                 .then(link => {
-                    console.log("Link trovato:", link);
+                    console.log("Link found:", link);
 
-                    // Redireziona l'utente al link trovato
+                    // Redirect user to found link
                     window.location.href = link;
                 })
                 .catch(error => {
                     console.log(error.message);
-                    // Eventuale gestione dell'errore se non trovato
+                    // Error handling if not found
                     alert("Insegnamento non trovato.");
                 });
         });
@@ -355,31 +355,31 @@ async function getLezioni(startDate, endDate) {
         lezioneDiv.querySelector("p#docente").addEventListener("click", function() {
             cercaDocente(teacher)
                 .then(link => {
-                    console.log("Link trovato:", link);
+                    console.log("Link found:", link);
 
-                    // Redireziona l'utente al link trovato
+                    // Redirect user to found link
                     window.location.href = link;
                 })
                 .catch(error => {
                     console.log(error.message);
-                    // Eventuale gestione dell'errore se non trovato
+                    // Error handling if not found
                     alert("Docente non trovato.");
                 });
         });
 
-        // Aggiungi il div della lezione nel container
+        // Add lesson div to container
         lezioniContainer.appendChild(lezioneDiv);
     });
 }
 
-// Funzione per cambiare il giorno
+// Function to change day
 function changeDay(offset) {
     currentDate.setDate(currentDate.getDate() + offset);
     currentStartDate = formatDate(currentDate);
     currentEndDate = formatDate(currentDate);
     getLezioni(currentStartDate, currentEndDate);
 }
-// Funzione per gestire il popup
+// Function to handle popup
 function openPopup() {
     document.getElementById("popup").style.display = "flex";
 }
@@ -387,7 +387,7 @@ function closePopup() {
     document.getElementById("popup").style.display = "none";
 }
 
-// Funzione per gestire il popup dell'help
+// Function to handle help popup
 function openHelp() {
     document.getElementById("popup-help").style.display = "flex";
 }
@@ -399,55 +399,55 @@ function clearLocalStorage() {
     localStorage.removeItem('selectedCourse');
     localStorage.removeItem('selectedAnno');
     localStorage.removeItem('selectedCurriculum');
-    // Ricarica la pagina per riflettere i cambiamenti
+    // Reload page to reflect changes
     location.reload();
 }
 
 function trovaInsegnamento(codiceMateria, nomeDocente) {
-    // Usa il proxy di CORS Proxy
+    // Use CORS Proxy
     var proxyUrl = 'https://corsproxy.io/?';
     var targetUrl = `https://www.unibo.it/it/studiare/dottorati-master-specializzazioni-e-altra-formazione/insegnamenti?search=True&codiceMateria=${codiceMateria}&annoAccademico=2024&CodeInsegnamentoButton=cerca`;
 
-    // Codifica l'URL di destinazione per evitare errori con caratteri speciali
+    // Encode destination URL to avoid errors with special characters
     var encodedUrl = encodeURIComponent(targetUrl);
 
-    // Esegui la richiesta HTTP attraverso CORS Proxy
+    // Execute HTTP request through CORS Proxy
     return fetch(proxyUrl + encodedUrl)
-        .then(response => response.text())  // Ottieni la risposta come testo (HTML)
+        .then(response => response.text())  // Get response as text (HTML)
         .then(html => {
-            // Crea un elemento temporaneo per fare il parsing dell'HTML
+            // Create temporary element to parse HTML
             var doc = new DOMParser().parseFromString(html, 'text/html');
 
-            // Trova tutti gli elementi con la classe "mainteaching"
+            // Find all elements with class "mainteaching"
             var insegnamenti = doc.querySelectorAll('.mainteaching');
             var trovato = false;
             var insegnamentoLink = "";
 
-            // Funzione ricorsiva per cercare in insegnamenti, figli e nipoti
+            // Recursive function to search in teachings, children and grandchildren
             function cercaDocenteInsegnamento(insegnamento) {
-                // Trova il docente nel nodo corrente
+                // Find teacher in current node
                 var docente = insegnamento.querySelector('.teacher');
                 if (docente && docente.textContent.trim() === nomeDocente) {
-                    // Trova il link dell'insegnamento principale
+                    // Find main teaching link
                     var teachingLink = insegnamento.querySelector('.teachingname a');
                     if (teachingLink) {
                         insegnamentoLink = teachingLink.href;
                         trovato = true;
-                        return true;  // Fermiamo la ricerca una volta trovato
+                        return true;  // Stop search once found
                     }
                 }
 
-                // Cerca nei figli (ul all'interno di insegnamento)
+                // Search in children (ul inside insegnamento)
                 var figli = insegnamento.querySelectorAll('ul > li');
                 for (let figlio of figli) {
                     if (cercaDocenteInsegnamento(figlio)) {
                         return true;
                     }
 
-                    // Cerca nei "nipoti" (ul con la classe "alphabetlist" dentro il figlio)
+                    // Search in "grandchildren" (ul with class "alphabetlist" inside child)
                     var nipoti = figlio.querySelectorAll('ul.alphabetlist > li');
                     for (let nipote of nipoti) {
-                        // Quando troviamo un nipote, risaliamo al figlio (insegnamento principale)
+                        // When we find a grandchild, go up to child (main teaching)
                         var teachingLink = figlio.querySelector('.teachingname a');
                         if (teachingLink) {
                             insegnamentoLink = teachingLink.href;
@@ -460,14 +460,14 @@ function trovaInsegnamento(codiceMateria, nomeDocente) {
                 return false;
             }
 
-            // Cerca tra gli insegnamenti principali
+            // Search among main teachings
             for (let insegnamento of insegnamenti) {
                 if (cercaDocenteInsegnamento(insegnamento)) {
-                    break; // Esci dal ciclo se il docente è stato trovato
+                    break; // Exit loop if teacher was found
                 }
             }
 
-            // Restituisci il link dell'insegnamento trovato, altrimenti restituisci un messaggio
+            // Return found teaching link, otherwise return a message
             if (trovato) {
                 return insegnamentoLink;
             } else {
@@ -481,25 +481,25 @@ function trovaInsegnamento(codiceMateria, nomeDocente) {
 }
 
 function cercaDocente(docenteNome) {
-    const corsProxy = "https://corsproxy.io/?";  // CORS Proxy che bypassa il blocco CORS
+    const corsProxy = "https://corsproxy.io/?";  // CORS Proxy to bypass CORS block
     const url = `https://www.unibo.it/uniboweb/unibosearch/rubrica.aspx?tab=FullTextPanel&query=${encodeURIComponent(docenteNome)}&tipo=people`;
 
-    return new Promise((resolve, reject) => {  // Restituiamo una Promise
+    return new Promise((resolve, reject) => {  // Return a Promise
         fetch(corsProxy + url)
             .then(response => response.text())
             .then(html => {
-                // Creiamo un oggetto DOM per poterlo scorrere
+                // Create DOM object to parse
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
 
-                // Troviamo la riga contenente l'URL del docente
+                // Find row containing teacher URL
                 const docenteInfo = doc.querySelector('table.contact.vcard');
                 if (docenteInfo) {
                     const webLinkElement = docenteInfo.querySelector('a.url');
                     if (webLinkElement) {
                         console.log(webLinkElement)
                         const docenteWebLink = webLinkElement.textContent.trim();
-                        resolve(docenteWebLink);  // Risolviamo la Promise con il link
+                        resolve(docenteWebLink);  // Resolve Promise with link
                     } else {
                         reject("Il docente non ha un sito web disponibile.");
                     }
