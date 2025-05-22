@@ -309,3 +309,42 @@ body.dark-mode option {
     background-color: #34495e;
     color: #ecf0f1;
 }
+
+/* Language Switcher */
+#language-switcher {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+#language-toggle {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    font-size: 14px;
+}
+
+#language-toggle:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+body.dark-mode #language-toggle {
+    background-color: #2980b9;
+}
+
+body.dark-mode #language-toggle:hover {
+    background-color: #3498db;
+}

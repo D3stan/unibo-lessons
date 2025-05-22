@@ -46,5 +46,6 @@ window.languageStrings.en = {
   "no_website": "The teacher does not have a website available.",
   "error_searching": "An error occurred during the search.",
   "footer_made_with": "Made with ❤️ by",
-  "footer_magic_from": "with a touch of magic from"
+  "footer_magic_from": "with a touch of magic from",
+  "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 }; 

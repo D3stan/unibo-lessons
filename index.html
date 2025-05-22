@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it"><head>
+<html lang="en"><head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="./css/style.css">
@@ -14,6 +14,11 @@
     <title data-i18n="page_title">Orario UNIBO</title>
 </head>
     <body>
+        <!-- Language switcher -->
+        <div id="language-switcher">
+            <button id="language-toggle">EN</button>
+        </div>
+        
         <div class="container">
             <div id="selected-day" onclick="openDatePicker()" style="cursor: pointer; text-align: center; margin-bottom: 20px; font-size: 2rem; font-weight: bold;" data-i18n="main_title">
                 Orario delle Lezioni
@@ -48,14 +53,6 @@
                         <option value=1 data-i18n="first_year">Primo</option>
                         <option value=2 data-i18n="second_year">Secondo</option>
                         <option value=3 data-i18n="third_year">Terzo</option>
-                    </select>
-                    
-                    <!-- Language selector -->
-                    <label for="language" data-i18n="language_label">Lingua:</label>
-                    <select id="language" style="margin-top: 15px; margin-bottom: 15px;">
-                        <option value="it" selected>Italiano</option>
-                        <option value="en">English</option>
-                        <!-- Add more languages as needed -->
                     </select>
                     
                     <div class="button-container">

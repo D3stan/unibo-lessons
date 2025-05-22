@@ -9,11 +9,15 @@ let course = null;  // Course parameter
 let anno = 1;  // Year parameter
 let curriculum = null
 
+// Global language strings object
+let strings = {};
+let currentLanguage = 'en'; // Default language is now English
+
 // Function to load language strings
 function loadLanguage(lang) {
     try {
         // Get strings from the global languageStrings object
-        const strings = window.languageStrings[lang] || window.languageStrings["it"]; // Default to Italian if language not found
+        const strings = window.languageStrings[lang] || window.languageStrings["en"]; // Default to English if language not found
         
         // Update all elements with data-i18n attribute
         document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -26,35 +30,46 @@ function loadLanguage(lang) {
             document.title = strings["page_title"];
         }
         
+        // Update HTML lang attribute
+        document.documentElement.lang = lang;
+        
         return strings; // Return strings for use outside DOM updates
     } catch (error) {
         console.error("Error loading language:", error);
-        return window.languageStrings["it"]; // Fallback to Italian
+        return window.languageStrings["en"]; // Fallback to English
     }
 }
 
-// Global language strings object
-let strings = {};
+// Function to toggle between languages
+function toggleLanguage() {
+    // Switch between English and Italian
+    currentLanguage = currentLanguage === 'en' ? 'it' : 'en';
+    
+    // Update the toggle button text
+    document.getElementById('language-toggle').textContent = currentLanguage.toUpperCase();
+    
+    // Save the selected language
+    localStorage.setItem('selectedLanguage', currentLanguage);
+    
+    // Load the new language
+    strings = loadLanguage(currentLanguage);
+    
+    // Update dynamic content
+    updateDynamicContent();
+}
 
 window.addEventListener('load', () => {
-    // Get the saved language or default to Italian
-    const savedLanguage = localStorage.getItem('selectedLanguage') || 'it';
+    // Get the saved language or default to English
+    currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
+    
+    // Set the language toggle button text
+    document.getElementById('language-toggle').textContent = currentLanguage.toUpperCase();
+    
+    // Add click event to language toggle button
+    document.getElementById('language-toggle').addEventListener('click', toggleLanguage);
     
     // Load language strings
-    strings = loadLanguage(savedLanguage);
-    
-    // Set the language selector to the current language
-    document.getElementById('language').value = savedLanguage;
-    
-    // Add event listener for language changes
-    document.getElementById('language').addEventListener('change', function() {
-        const newLanguage = this.value;
-        localStorage.setItem('selectedLanguage', newLanguage);
-        strings = loadLanguage(newLanguage);
-        
-        // Update dynamic content that isn't controlled by data-i18n
-        updateDynamicContent();
-    });
+    strings = loadLanguage(currentLanguage);
     
     const themeToggleButton = document.getElementById('theme-toggle');
     const savedTheme = localStorage.getItem('theme');
@@ -124,7 +139,8 @@ function openDatePicker() {
 }
 
 function getDayName(date) {
-    const days = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+    // Use the days array from the current language strings
+    const days = strings.days || ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; // Default to English
     return days[date.getDay()];
 }
 function formatDate(date) {
