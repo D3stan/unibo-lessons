@@ -1,0 +1,23 @@
+# Editor/IDE files
+.vscode/
+
+# Logs and temp files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Deployment files
+.env
+.env.local
+.env.*.local
+
+# Output or packaged files
+*.zip
+*.tar.gz
+
+# Mac/Linux hidden files
+._*
+
+# Git backup during merges
+*.orig
