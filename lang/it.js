@@ -1,6 +1,5 @@
 // Italian language strings
-window.languageStrings = window.languageStrings || {};
-window.languageStrings.it = {
+export default {
   "page_title": "Orario UNIBO",
   "main_title": "Orario delle Lezioni",
   "settings_button": "Impostazioni",
@@ -48,4 +47,4 @@ window.languageStrings.it = {
   "footer_made_with": "Fatto con ❤️ da",
   "footer_magic_from": "con un tocco di magia di",
   "days": ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"]
-}; 
+};
