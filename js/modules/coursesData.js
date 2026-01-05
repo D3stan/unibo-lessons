@@ -166,12 +166,12 @@ const coursesData = {
         "course_name": "Ingegneria meccanica (Campus Forlì)",
         "type": "laurea"
     },
-    "IngegneriaMeccanica-Bologna": {
-        "course_name": "Ingegneria meccanica (Campus Bologna)",
-        "type": "laurea"
-    },
     "IngegneriAmbienTerritorio": {
         "course_name": "Ingegneria per l'ambiente e il territorio",
+        "type": "laurea"
+    },
+    "IngegneriaMeccanica-Bologna": {
+        "course_name": "Ingegneria meccanica (Campus Bologna)",
         "type": "laurea"
     },
     "meccatronica": {
@@ -523,3 +523,5 @@ const coursesData = {
         "type": "laurea"
     }
 };
+
+export default coursesData;

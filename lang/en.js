@@ -1,6 +1,5 @@
 // English language strings
-window.languageStrings = window.languageStrings || {};
-window.languageStrings.en = {
+export default {
   "page_title": "UNIBO Schedule",
   "main_title": "Class Schedule",
   "settings_button": "Settings",
@@ -48,4 +47,4 @@ window.languageStrings.en = {
   "footer_made_with": "Made with ❤️ by",
   "footer_magic_from": "with a touch of magic from",
   "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-}; 
+};
