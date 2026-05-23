@@ -1,6 +1,6 @@
-// Italian language strings
-window.languageStrings = window.languageStrings || {};
-window.languageStrings.it = {
+import { Translations } from './en';
+
+export const it: Translations = {
   "page_title": "Orario UNIBO",
   "main_title": "Orario delle Lezioni",
   "settings_button": "Impostazioni",
@@ -12,8 +12,11 @@ window.languageStrings.it = {
   "course_label": "Corso:",
   "year_label": "Anno:",
   "language_label": "Lingua:",
+  "academic_year_label": "Anno Accademico:",
+  "academic_year_calculated": "Calcolo auto",
   "select_course": "Seleziona un corso",
   "select_year": "Seleziona un anno",
+  "select_curriculum": "Seleziona un curriculum",
   "first_year": "Primo",
   "second_year": "Secondo",
   "third_year": "Terzo",
@@ -22,16 +25,16 @@ window.languageStrings.it = {
   "theme_button": "Tema",
   "help_title": "Per impostare il corso utilizza la sezione Impostazioni",
   "help_theme": "Puoi cambiare il tema chiaro/scuro dalle Impostazioni",
-  "help_date": "Clicca sopra il giorno per cambiarlo velocemente usando il caledario",
-  "help_course": "Clicca sopra un insegnamento per aprire la pagina del corso",
-  "help_teacher": "Clicca sopra un docente per aprire la pagina del docente",
+  "help_date": "Clicca sopra il banner della data in alto per cambiarla velocemente usando il calendario",
+  "help_course": "Clicca sopra il titolo di un insegnamento per aprire la pagina del corso",
+  "help_teacher": "Clicca sopra il nome di un docente per aprire la pagina del docente",
   "help_teams": "Se disponibile verrà visualizzato un pulsante per connettersi all'aula virtuale Teams",
   "help_reset": "In caso di problemi, eseguire un reset dalle Impostazioni e riconfigurare il proprio corso",
-  "previous_button": "← Precedente",
-  "next_button": "Successivo →",
-  "configure_course": "Configura il tuo corso dalle impostazioni",
+  "previous_button": "Precedente",
+  "next_button": "Successivo",
+  "configure_course": "Configura il tuo corso dalle Impostazioni",
   "error_loading": "Errore nel recupero delle lezioni. Riprova più tardi.",
-  "no_lessons": "Nessuna lezione disponibile",
+  "no_lessons": "Nessuna lezione programmata per oggi",
   "schedule_of": "Lezioni del",
   "time_label": "Orario:",
   "teacher_label": "Docente:",
@@ -47,5 +50,6 @@ window.languageStrings.it = {
   "error_searching": "Si è verificato un errore durante la ricerca.",
   "footer_made_with": "Fatto con ❤️ da",
   "footer_magic_from": "con un tocco di magia di",
-  "days": ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"]
-}; 
+  "days": ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"],
+  "months": ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"]
+};

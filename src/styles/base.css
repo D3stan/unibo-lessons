@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Minimal developer-focused palette (Light Mode) */
+  --bg-primary: #fafafa;         /* Flat canvas grey */
+  --bg-secondary: #ffffff;       /* Pure white for panels */
+  --text-primary: #090a0c;       /* Near black */
+  --text-secondary: #6b7280;     /* Muted grey */
+  --accent-primary: #111827;     /* Solid charcoal accent */
+  --accent-secondary: #3b82f6;   /* Minimal active blue */
+  --accent-warm: #4b5563;        /* Neutral gray for labels */
+  --accent-success: #10b981;     /* Teams green */
+  --border-color: #e5e7eb;       /* Fine border grey */
+  
+  --card-shadow: none;           /* Ultra-minimal: no shadows! */
+  --shadow-hover: none;
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: #e5e7eb;
+  --shadow-glow: none;
+  --dock-shadow: 0 -4px 20px rgba(0, 0, 0, 0.03);
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --transition-speed: 0.2s;
+  
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+}
+
+body.dark-mode {
+  /* Minimal developer-focused palette (Dark Mode) - Inspired by HostAdvisor Settings screen */
+  --bg-primary: #0a0b0d;         /* Near black charcoal gray */
+  --bg-secondary: #111317;       /* Dark slate card gray */
+  --text-primary: #f3f4f6;       /* Crisp off-white */
+  --text-secondary: #88929a;     /* Muted HostAdvisor secondary text */
+  --accent-primary: #f3f4f6;     /* Bright clean accent */
+  --accent-secondary: #3b82f6;   /* Minimal HostAdvisor sky blue selection */
+  --accent-warm: #9ca3af;        /* Soft silver */
+  --accent-success: #34d399;     /* Teal green */
+  --border-color: #1f2228;       /* Very thin, low-contrast border */
+  
+  --card-shadow: none;           /* Ultra-minimal: flat aesthetics! */
+  --shadow-hover: none;
+  --glass-bg: rgba(17, 19, 23, 0.85);
+  --glass-border: #1f2228;
+  --shadow-glow: none;
+  --dock-shadow: 0 -8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Global Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+  min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom, 24px);
+}
+
+/* Transitions */
+button, select, input, a, .lezione, .lesson-card {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}

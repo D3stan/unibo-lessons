@@ -1,4 +1,10 @@
-const coursesData = {
+export interface Course {
+  course_name?: string;
+  type?: string;
+  department?: string;
+}
+
+export const coursesData: Record<string, Course> = {
     "ECONOMIA": { 
         "department": "- ECONOMIA E MANAGEMENT -", 
     },
@@ -104,7 +110,7 @@ const coursesData = {
         "type": "1cycle"
     },
     "INGEGNERIA": { 
-        "department": "- INGENGERIA -", 
+        "department": "- INGEGNERIA -", 
     },
     "MaterialiCompositiPolimerici": {
         "course_name": "Compositi polimerici",

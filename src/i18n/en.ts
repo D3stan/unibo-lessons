@@ -1,6 +1,4 @@
-// English language strings
-window.languageStrings = window.languageStrings || {};
-window.languageStrings.en = {
+export const en = {
   "page_title": "UNIBO Schedule",
   "main_title": "Class Schedule",
   "settings_button": "Settings",
@@ -12,8 +10,11 @@ window.languageStrings.en = {
   "course_label": "Course:",
   "year_label": "Year:",
   "language_label": "Language:",
+  "academic_year_label": "Academic Year:",
+  "academic_year_calculated": "Auto-calculated",
   "select_course": "Select a course",
   "select_year": "Select a year",
+  "select_curriculum": "Select a curriculum",
   "first_year": "First",
   "second_year": "Second",
   "third_year": "Third",
@@ -22,16 +23,16 @@ window.languageStrings.en = {
   "theme_button": "Theme",
   "help_title": "To set up your course, use the Settings section",
   "help_theme": "You can change between light/dark theme from Settings",
-  "help_date": "Click on the day to change it quickly using the calendar",
-  "help_course": "Click on a course to open the course page",
-  "help_teacher": "Click on a teacher to open the teacher's page",
+  "help_date": "Click on the date banner at the top to change it quickly using the calendar",
+  "help_course": "Click on a course title to open the official syllabus page",
+  "help_teacher": "Click on a teacher's name to open their official university web page",
   "help_teams": "If available, a button will be displayed to connect to the Teams virtual classroom",
   "help_reset": "In case of problems, perform a reset from Settings and reconfigure your course",
-  "previous_button": "← Previous",
-  "next_button": "Next →",
-  "configure_course": "Configure your course from settings",
+  "previous_button": "Previous",
+  "next_button": "Next",
+  "configure_course": "Please configure your course from Settings",
   "error_loading": "Error retrieving classes. Try again later.",
-  "no_lessons": "No classes available",
+  "no_lessons": "No classes scheduled for this day",
   "schedule_of": "Classes for",
   "time_label": "Time:",
   "teacher_label": "Teacher:",
@@ -41,11 +42,13 @@ window.languageStrings.en = {
   "time_unavailable": "Time not available",
   "teacher_unavailable": "Teacher not available",
   "classroom_unavailable": "Classroom not available",
-  "no_teaching_found": "Course not found.",
-  "teacher_not_found": "Teacher not found.",
-  "no_website": "The teacher does not have a website available.",
+  "no_teaching_found": "Course details page not found.",
+  "teacher_not_found": "Teacher profile not found.",
+  "no_website": "The teacher does not have an active website.",
   "error_searching": "An error occurred during the search.",
   "footer_made_with": "Made with ❤️ by",
   "footer_magic_from": "with a touch of magic from",
-  "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-}; 
+  "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+  "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+};
+export type Translations = typeof en;
