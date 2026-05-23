@@ -5,11 +5,13 @@ const PROXY_URL = 'https://corsproxy.io/?';
  * Uses a CORS proxy to query the official UniBo directory.
  */
 export function cercaDocente(teacherName: string): Promise<string> {
+  // Single-encode the query parameters
   const targetUrl = `https://www.unibo.it/uniboweb/unibosearch/rubrica.aspx?tab=FullTextPanel&query=${encodeURIComponent(
     teacherName
   )}&tipo=people`;
 
-  return fetch(PROXY_URL + encodeURIComponent(targetUrl))
+  // Fetch using the proxy directly without outer double-encoding
+  return fetch(PROXY_URL + targetUrl)
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -46,9 +48,11 @@ export function trovaInsegnamento(
   nomeDocente: string,
   academicYear: number
 ): Promise<string> {
-  const targetUrl = `https://www.unibo.it/it/studiare/dottorati-master-specializzazioni-e-altra-formazione/insegnamenti?search=True&codiceMateria=${codiceMateria}&annoAccademico=${academicYear}&CodeInsegnamentoButton=cerca`;
+  // Use the updated redirected teaching search URL for direct speed and reliability
+  const targetUrl = `https://www.unibo.it/it/studiare/insegnamenti-competenze-trasversali-moocs/insegnamenti?search=True&codiceMateria=${codiceMateria}&annoAccademico=${academicYear}&CodeInsegnamentoButton=cerca`;
 
-  return fetch(PROXY_URL + encodeURIComponent(targetUrl))
+  // Fetch using the proxy directly without outer double-encoding
+  return fetch(PROXY_URL + targetUrl)
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -61,53 +65,22 @@ export function trovaInsegnamento(
 
       // Find all main teaching cards
       const insegnamenti = doc.querySelectorAll('.mainteaching');
-      let trovato = false;
-      let insegnamentoLink = '';
-
-      // Helper function to search recursively
-      function cercaDocenteInsegnamento(insegnamento: Element): boolean {
-        const docente = insegnamento.querySelector('.teacher');
-        if (docente && docente.textContent?.trim() === nomeDocente) {
-          const teachingLink = insegnamento.querySelector('.teachingname a') as HTMLAnchorElement | null;
-          if (teachingLink) {
-            insegnamentoLink = teachingLink.href;
-            trovato = true;
-            return true;
-          }
-        }
-
-        // Search in sub-items
-        const figli = insegnamento.querySelectorAll('ul > li');
-        for (const figlio of Array.from(figli)) {
-          if (cercaDocenteInsegnamento(figlio)) {
-            return true;
-          }
-
-          // Search in grandchildren
-          const nipoti = figlio.querySelectorAll('ul.alphabetlist > li');
-          if (nipoti.length > 0) {
-            const teachingLink = figlio.querySelector('.teachingname a') as HTMLAnchorElement | null;
-            if (teachingLink) {
-              insegnamentoLink = teachingLink.href;
-              trovato = true;
-              return true;
-            }
-          }
-        }
-
-        return false;
-      }
 
       for (const insegnamento of Array.from(insegnamenti)) {
-        if (cercaDocenteInsegnamento(insegnamento)) {
-          break;
+        // Find all teachers mentioned in this card (both main teachers and sub-teachers)
+        const teachers = Array.from(insegnamento.querySelectorAll('.teacher')).map(
+          (t) => t.textContent?.trim()
+        );
+
+        // If the teacher name matches any teacher in this module card, return the main teaching's syllabus link
+        if (teachers.includes(nomeDocente)) {
+          const teachingLink = insegnamento.querySelector('.teachingname a') as HTMLAnchorElement | null;
+          if (teachingLink && teachingLink.href) {
+            return teachingLink.href;
+          }
         }
       }
 
-      if (trovato && insegnamentoLink) {
-        return insegnamentoLink;
-      } else {
-        throw new Error("no_teaching_found");
-      }
+      throw new Error("no_teaching_found");
     });
 }
