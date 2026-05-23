@@ -116,22 +116,6 @@ const App = () => {
     storeState.academicYearOverride
   ]);
 
-  // Manage body scroll locking when no lessons are present
-  useEffect(() => {
-    const hasLessons = lessons && lessons.length > 0;
-    const shouldScroll = hasLessons && !loading;
-
-    if (shouldScroll) {
-      document.body.classList.remove('no-scroll');
-    } else {
-      document.body.classList.add('no-scroll');
-    }
-
-    return () => {
-      document.body.classList.remove('no-scroll');
-    };
-  }, [lessons, loading, storeState.course]);
-
   // Handle Day Offsets
   const handleDayOffset = (offset: number) => {
     const nextDate = new Date(storeState.currentDate);

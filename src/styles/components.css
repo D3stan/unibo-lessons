@@ -770,19 +770,7 @@
   color: var(--accent-secondary);
 }
 
-/* ==========================================
-   iOS & SAFARI UX WORKAROUNDS
-   ========================================== */
-
 /* Disables double-tap to zoom on iOS Safari for all rapid-tapped elements */
 button, select, input, a, .bottom-dock, .bottom-dock-button, .bottom-dock-center-badge, .date-header-card, .lesson-card {
   touch-action: manipulation;
-}
-
-/* Prevents scrolling/dragging bounce entirely on iOS Safari when canvas has no scrolling items */
-body.no-scroll {
-  overflow: hidden;
-  height: 100%;
-  position: fixed;
-  width: 100%;
 }
